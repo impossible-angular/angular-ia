@@ -6,7 +6,7 @@
     - [Dynamic Injector](#dynamic-injector)
     - [Dynamic @Input](#dynamic-input)
     - [@Self vs @Host](#self-vs-host)
-- [Angular examples](#Impossible-angular)
+- [Angular examples](#angular-examples)
     - [ng commands](#ng-commands)
     - [Directives](#directives)
     - [RxJS](#rxjs)
@@ -258,6 +258,7 @@ Projected component doesn't inject service from parent component with `self: tru
     </ia-item>
 ```
 
+## Angular examples
 ### ng commands
 
 Install latest `angular cli`
