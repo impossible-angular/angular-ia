@@ -20,6 +20,7 @@ All projects can be executed using the `npm run [project name]` script in packag
 
 Example: for `Dynamic Providers`
 ```shell
+npm install
 npm run dynamic-providers
 ```
 ## Impossible Angular - Youtube chanel
