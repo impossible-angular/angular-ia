@@ -4,15 +4,15 @@ import {spawn} from 'child_process'
 
 const projectName = process.argv[2]
 
-const DYN_PROVIDERS = 'dyn_providers'
-const DYN_INJECTOR = 'dyn_injector'
-const DYN_INPUT = 'dyn_input'
-const SELF_VS_HOST = 'self_vs_host'
+const DYNAMIC_PROVIDERS = 'dynamic-providers'
+const DYNAMIC_INJECTOR = 'dynamic-injector'
+const DYNAMIC_INPUT = 'dynamic-input'
+const SELF_VS_HOST = 'self-vs-host'
 const DIRECTIVES = 'directives'
 const RXJS = 'rxjs'
-const FORWARD_REF = 'forward_ref'
+const FORWARD_REF = 'forward-ref'
 const CVA = 'cva'
-const NGRX_VS_SIGNAL = 'ngrx_vs_signal'
+const NGRX_VS_SIGNAL = 'ngrx-vs-signal'
 
 const INIT_APP = resolve('init-files/app.ts')
 const INIT_APP_CONFIG = resolve('init-files/app.config.ts')
@@ -91,15 +91,16 @@ const appConfigProviders = replaceInFile(FILE_APP_CONFIG, 'provideZonelessChange
 const appConfigImportFrom = replaceInFile(FILE_APP_CONFIG, 'from \'@angular/core\'')
 const packageAdd = replaceInFile(FILE_PACKAGE, '"tslib": "^2.3.0"')
 
-const dynProviderProject = async () => {
-    await tsconfigInclude(`\n    "src/**/dynamic.providers.ts",`)
+
+const dynamicProvidersProject = async () => {
+    await tsconfigInclude(`\n    "src/**/dynamic-providers.ts",`)
     await appTemplate('<ia-widget-container></ia-widget-container>')
     await appImports('WidgetContainerComponent')
-    await appImportFrom('\nimport { WidgetContainerComponent } from \'@ia/dynamic.providers\'')
+    await appImportFrom('\nimport { WidgetContainerComponent } from \'@ia/dynamic-providers\'')
 }
 
-const dynInjectorProject = async () => {
-    await tsconfigInclude(`\n    "src/**/dynamic.injector.ts",`)
+const dynamicInjectorProject = async () => {
+    await tsconfigInclude(`\n    "src/**/dynamic-injector.ts",`)
     await appTemplate('<ia-injector-container></ia-injector-container>')
     await appImports('InjectorContainerComponent')
     await appImportFrom('\nimport { InjectorContainerComponent } from \'@ia/dynamic-injector\'')
@@ -165,13 +166,13 @@ const ngrxSignalProject = async () => {
 await resetProject()
 
 switch (projectName) {
-    case DYN_PROVIDERS:
-        await dynProviderProject()
+    case DYNAMIC_PROVIDERS:
+        await dynamicProvidersProject()
         break
-    case DYN_INJECTOR:
-        await dynInjectorProject()
+    case DYNAMIC_INJECTOR:
+        await dynamicInjectorProject()
         break
-    case DYN_INPUT:
+    case DYNAMIC_INPUT:
         await dynInputProject()
         break
     case SELF_VS_HOST:
@@ -198,9 +199,9 @@ switch (projectName) {
 Syntax: node projects [project-name]
 Example: node projects ${DIRECTIVES}
 project-name:
-  ${DYN_PROVIDERS}
-  ${DYN_INJECTOR}
-  ${DYN_INPUT}
+  ${DYNAMIC_PROVIDERS}
+  ${DYNAMIC_INJECTOR}
+  ${DYNAMIC_INPUT}
   ${SELF_VS_HOST}
   ${DIRECTIVES}
   ${RXJS}

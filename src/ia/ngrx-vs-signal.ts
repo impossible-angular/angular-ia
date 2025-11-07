@@ -121,6 +121,7 @@ export class SignalStore {
         @for (item of signalStore.selectItems(); track item.id) {
             <p>id:{{ item.id }} name:{{ item.name }}</p>
         }
+        <p [style.color]="'red'">Check the console for an error regarding a read-only property</p>
     `
 })
 export class NgrxSignalComponent {
@@ -140,7 +141,7 @@ export class NgrxSignalComponent {
             tap(() => this.store.dispatch(ItemsActionGroup.removeItem({id: 'id-5'})))
         ).subscribe(() => {
             // test immutability for source object
-            // arr.push({id: 'id-1', name: '2'})
+            arr.push({id: 'id-1', name: '2'})
         })
 
         const arr2 = [{id: 'id-1', name: '1'}] as Array<Item>

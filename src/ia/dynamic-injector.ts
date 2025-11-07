@@ -42,7 +42,7 @@ const setMessageCount = (cnt: number) => {
     selector: 'ia-toolbar',
     template: `
         <hr>
-        <h1>Message count: {{ messages?.count }}</h1>
+        <h1>Message count: {{ messages.count }}</h1>
         <hr>
     `
 })

@@ -2,10 +2,16 @@
   "name": "impossibel_angular",
   "version": "1.0.0",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development"
+    "reset": "node projects",
+    "dynamic-providers": "node projects dynamic-providers & ng serve",
+    "dynamic-injector": "node projects dynamic-injector & ng serve",
+    "dynamic-input": "node projects dynamic-input & ng serve",
+    "self-vs-host": "node projects self-vs-host & ng serve",
+    "directives": "node projects directives & ng serve",
+    "rxjs": "node projects rxjs & ng serve",
+    "forward-ref": "node projects forward-ref & ng serve",
+    "cva": "node projects cva & ng serve",
+    "ngrx-vs-signal": "node projects ngrx-vs-signal & ng serve"
   },
   "prettier": {
     "printWidth": 100,

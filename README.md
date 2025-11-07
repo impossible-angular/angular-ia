@@ -1,5 +1,6 @@
 # Impossible Angular
 
+- [Quick start](#quick-start)
 - [Impossible Angular - Youtube chanel](#impossible-angular-youtube-chanel)
     - [Dynamic Providers](#dynamic-providers)
     - [Dynamic Injector](#dynamic-injector)
@@ -14,10 +15,17 @@
     - [NgRx install](#ngrx)
     - [NgRx vs Signal](#ngrx-vs-signal)
 
+### Quick start
+All projects can be executed using the `npm run [project name]` script in package.json.
+
+Example: for `Dynamic Providers`
+```shell
+npm run dynamic-providers
+```
 ## Impossible Angular - Youtube chanel
 ### Dynamic Providers
 
-[**Source file:** dynamic.providers.ts](src/ia/dynamic.providers.ts)
+[**Source file:** dynamic-providers.ts](src/ia/dynamic-providers.ts)
 
 **Briefly**
 
