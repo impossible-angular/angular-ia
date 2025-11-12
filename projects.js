@@ -9,6 +9,7 @@ const DYNAMIC_INJECTOR = 'dynamic-injector'
 const DYNAMIC_INPUT = 'dynamic-input'
 const SELF_VS_HOST = 'self-vs-host'
 const DIRECTIVES = 'directives'
+const PIPES = 'pipes'
 const RXJS = 'rxjs'
 const FORWARD_REF = 'forward-ref'
 const CVA = 'cva'
@@ -130,6 +131,13 @@ const directivesProject = async () => {
     await appImportFrom('\nimport { DirectivesContainerComponent } from \'@ia/directives\'')
 }
 
+const pipesProject = async () => {
+    await tsconfigInclude(`\n    "src/**/pipes.ts",`)
+    await appTemplate('<ia-pipes-container></ia-pipes-container>')
+    await appImports('PipesContainerComponent')
+    await appImportFrom('\nimport { PipesContainerComponent } from \'@ia/pipes\'')
+}
+
 const rxjsProject = async () => {
     await tsconfigInclude(`\n    "src/**/rxjs.ts",`)
     await appTemplate('<ia-rxjs-container></ia-rxjs-container>')
@@ -181,6 +189,9 @@ switch (projectName) {
     case DIRECTIVES:
         await directivesProject()
         break
+    case PIPES:
+        await pipesProject()
+        break
     case RXJS:
         await rxjsProject()
         break
@@ -204,6 +215,7 @@ project-name:
   ${DYNAMIC_INPUT}
   ${SELF_VS_HOST}
   ${DIRECTIVES}
+  ${PIPES}
   ${RXJS}
   ${FORWARD_REF}
   ${CVA}

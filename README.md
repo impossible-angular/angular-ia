@@ -9,6 +9,7 @@
 - [Angular examples](#angular-examples)
     - [ng commands](#ng-commands)
     - [Directives](#directives)
+    - [Pipes](#pipes)
     - [RxJS](#rxjs)
     - [Circular dependency with forwardRef](#circular-dependency-with-forwardref)
     - [Simplified implementation of ControlValueAccessor (CVA)](#simplified-implementation-of-controlvalueaccessor-cva)
@@ -298,6 +299,23 @@ Examples of attribute and structural directives.
 **Details**
 * **Attribute directives** use `ElementRef.nativeElement` and `Renderer2` to change element attributes.
 * **Structural directives** use `TemplateRef` and `ViewContainerRef.createEmbeddedView` to create and manipulate elements in the DOM.
+
+
+### Pipes
+
+[**Source file:** pipes.ts](src/ia/pipes.ts)
+
+**Briefly**
+
+Examples of Custom `async` Pipe and Extensions of Angular Core Pipes
+
+**Usage**
+```HTML
+<ia-pipes-container></ia-pipes-container>
+```
+**Details**
+* The **Async** Pipe uses the pure: `false option` and a `Signal` instead of a regular value and the `detectChanges()` function. 
+* The **Extension** Pipe utilizes the `base Angular` pipe class for standard invocation while accepting additional arguments to produce a custom result.
 
 ### RxJS
 

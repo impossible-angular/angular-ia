@@ -8,6 +8,7 @@
     "dynamic-input": "node projects dynamic-input & ng serve",
     "self-vs-host": "node projects self-vs-host & ng serve",
     "directives": "node projects directives & ng serve",
+    "pipes": "node projects pipes & ng serve",
     "rxjs": "node projects rxjs & ng serve",
     "forward-ref": "node projects forward-ref & ng serve",
     "cva": "node projects cva & ng serve",
