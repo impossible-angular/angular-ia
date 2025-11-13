@@ -1,6 +1,6 @@
-import {copyFile, readFile, writeFile} from 'fs/promises'
-import {resolve} from 'path'
-import {spawn} from 'child_process'
+import { copyFile, readFile, writeFile } from 'fs/promises'
+import { resolve } from 'path'
+import { spawn } from 'child_process'
 
 const projectName = process.argv[2]
 
@@ -14,6 +14,7 @@ const RXJS = 'rxjs'
 const FORWARD_REF = 'forward-ref'
 const CVA = 'cva'
 const NGRX_VS_SIGNAL = 'ngrx-vs-signal'
+const ZONELESS = 'zoneless'
 
 const INIT_APP = resolve('init-files/app.ts')
 const INIT_APP_CONFIG = resolve('init-files/app.config.ts')
@@ -27,14 +28,14 @@ const FILE_MAIN = resolve('src/main.ts')
 const FILE_TSCONFIG = resolve('tsconfig.app.json')
 const FILE_PACKAGE = resolve('package.json')
 
-async function replaceString(filePath, searchString, replaceContent) {
+async function replaceString(filePath: string, searchString: string, replaceContent: string) {
     try {
         let fileContent = await readFile(filePath, 'utf-8')
         const escapedSearchString = searchString.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
         const regex = new RegExp(escapedSearchString, 'g')
         if (!fileContent.includes(searchString)) {
             console.warn(`Warning: Search string "${searchString}" not found. File not modified.`)
-            return;
+            return
         }
         fileContent = fileContent.replace(regex, replaceContent)
         await writeFile(filePath, fileContent, 'utf-8')
@@ -60,23 +61,23 @@ const npmInstall = async () => new Promise((resolve, reject) => {
     })
     child.stderr.on('data', (data) => {
         process.stderr.write(data.toString())
-    });
+    })
     child.on('close', (code) => {
         if (code !== 0) {
             console.error(`\nProcess exited with code ${code}`)
             reject(code)
         } else {
-            console.log(`\nProcess exited successfully.`);
-            resolve()
+            console.log(`\nProcess exited successfully.`)
+            resolve(1)
         }
     })
     child.on('error', (err) => {
-        console.error(`Failed to start subprocess: ${err.message}`);
+        console.error(`Failed to start subprocess: ${err.message}`)
     })
 })
 
-const replaceInFile = (filePath, searchString) => {
-    return async (replaceContent) => {
+const replaceInFile = (filePath: string, searchString: string) => {
+    return async (replaceContent: string) => {
         replaceContent = searchString + replaceContent
         await replaceString(filePath, searchString, replaceContent)
     }
@@ -171,6 +172,13 @@ const ngrxSignalProject = async () => {
     await appConfigImportFrom('\nimport { provideStore } from \'@ngrx/store\'')
 }
 
+const zoneLessProject = async () => {
+    await tsconfigInclude(`\n    "src/**/zoneless.ts",`)
+    await appTemplate('<ia-zoneless-container></ia-zoneless-container>')
+    await appImports('ZoneLessContainerComponent')
+    await appImportFrom('\nimport { ZoneLessContainerComponent } from \'@ia/zoneless\'')
+}
+
 await resetProject()
 
 switch (projectName) {
@@ -204,6 +212,9 @@ switch (projectName) {
     case NGRX_VS_SIGNAL:
         await ngrxSignalProject()
         break
+    case ZONELESS:
+        await zoneLessProject()
+        break
 
     default:
         console.warn(`
@@ -220,6 +231,7 @@ project-name:
   ${FORWARD_REF}
   ${CVA}
   ${NGRX_VS_SIGNAL}
+  ${ZONELESS}
 `)
 }
 

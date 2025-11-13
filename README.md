@@ -15,8 +15,10 @@
     - [Simplified implementation of ControlValueAccessor (CVA)](#simplified-implementation-of-controlvalueaccessor-cva)
     - [NgRx install](#ngrx)
     - [NgRx vs Signal](#ngrx-vs-signal)
+    - [ZoneLess & OnPush](#zoneless--onpush)
 
 ### Quick start
+
 All projects can be executed using the `npm run [project name]` script in package.json.
 
 Example: for `Dynamic Providers`
@@ -24,14 +26,16 @@ Example: for `Dynamic Providers`
 npm install
 npm run dynamic-providers
 ```
+
 ## Impossible Angular - Youtube chanel
+
 ### Dynamic Providers
 
 [**Source file:** dynamic-providers.ts](src/ia/dynamic-providers.ts)
 
 **Briefly**
 
-Directives-based pattern for dynamic providers. Directives can share providers with a component. 
+Directives-based pattern for dynamic providers. Directives can share providers with a component.
 Furthermore, `createComponent()` method can dynamically attach a directive to that component at runtime.
 
 **Usage**
@@ -83,6 +87,7 @@ Service injection inside function.
 Assign `ApplicationRef.injector` to global variable inside `bootstrapApplication(...)`.
 
 **Usage**
+
 ```HTML
 <!--add to main.ts-->
 .then((app) => setAppInjector(app.injector))
@@ -140,20 +145,21 @@ export class AddMessageComponent {
 
 **Briefly**
 
-When applying `@Input` to a component created via `ViewContainerRef`, 
-you need to use the `setInput()` method. However, this approach does not dynamically update 
+When applying `@Input` to a component created via `ViewContainerRef`,
+you need to use the `setInput()` method. However, this approach does not dynamically update
 the `@Input` properties in the same way that template-based bindings do.
 How to make it possible?
 
 **Usage**
+
 ```HTML
 <ia-dyn-input></ia-dyn-input>
 ```
 
 **Details**
 
-The `CountLabelComponent` has a `count` signal input property that uses the model() function, 
-which allows modifying the binding value directly within this component. 
+The `CountLabelComponent` has a `count` signal input property that uses the model() function,
+which allows modifying the binding value directly within this component.
 The `count$: WritableSignal` is used to maintain a signal reference from the parent component.
 
 ```TypeScript
@@ -175,7 +181,7 @@ export class CountLabelComponent {
 ```
 
 Consider `ia-dyn-input` component, where `ia-count-label` is created within the template
-and separately through `ViewContainerRef.createComponent` method. 
+and separately through `ViewContainerRef.createComponent` method.
 The `dynCount` signal property is assigned to both of these instances.
 
 ```TypeScript
@@ -210,7 +216,7 @@ export class DynInputComponent {
 
 [**Source file:** self-vs-host.ts](src/ia/self-vs-host.ts)
 
-**Briefly** 
+**Briefly**
 
 One crucial difference between `self` and `host` parameters for service injection, it is projection.
 
@@ -297,6 +303,7 @@ Examples of attribute and structural directives.
 <ia-directives-container></ia-directives-container>
 ```
 **Details**
+
 * **Attribute directives** use `ElementRef.nativeElement` and `Renderer2` to change element attributes.
 * **Structural directives** use `TemplateRef` and `ViewContainerRef.createEmbeddedView` to create and manipulate elements in the DOM.
 
@@ -310,12 +317,39 @@ Examples of attribute and structural directives.
 Examples of Custom `async` Pipe and Extensions of Angular Core Pipes
 
 **Usage**
+
 ```HTML
 <ia-pipes-container></ia-pipes-container>
 ```
 **Details**
+
 * The **Async** Pipe uses the pure: `false option` and a `Signal` instead of a regular value and the `detectChanges()` function. 
 * The **Extension** Pipe utilizes the `base Angular` pipe class for standard invocation while accepting additional arguments to produce a custom result.
+
+The **Angular async** pipe cannot get a value from an **Observable that is wrapped** within a function call in the template because of how the pipe manages its subscription and,
+crucially, how change detection works.
+
+```js
+
+@Component({
+    template: `Does not work! {{value | async}}`
+})
+export class AsyncComponent {
+    // Observable that is wrapped within function
+    value = () => interval(1000)
+}
+```
+
+```js
+
+@Component({
+    template: `Works! {{value | async}}`
+})
+export class AsyncComponent {
+    // Observable that assigned direct to value
+    value = interval(1000)
+}
+```
 
 ### RxJS
 
@@ -325,7 +359,7 @@ Examples of Custom `async` Pipe and Extensions of Angular Core Pipes
 
 An example of common usage of RxJS functions.
 
-**Usage** 
+**Usage**
 
 In the constructor uncomment the function that you want to run.
 ```angular2html
@@ -384,7 +418,7 @@ export class ChildComponent {
 }
 ```
 
-Parent component where we defined a provider to itself. 
+Parent component where we defined a provider to itself.
 
 ```TypeScript
 @Component({
@@ -413,12 +447,12 @@ export class ParentComponent {
 This example is designed to illustrate key Angular concepts, such as Dependency Injection, and core JavaScript techniques, including closures and callback functions.
 
 **Usage**
+
 ```HTML
 <ia-cva-container></ia-cva-container>
 ```
 
 **Hot it works.**
-
 
 The component that wants to be CVA registered a InjectionToken `IA_FORM_CONTROL` that references to itself using forwardRef.
 
@@ -429,6 +463,7 @@ Also implement and register the necessary callback functions from `IValueControl
 All change detection and validation functionality located within directive.
 
 **Details**
+
 InjectionToken for host component and directive.
 
 ```ts
@@ -551,3 +586,76 @@ Compare the implementation of CRUD operations using the `NgRx store` versus a `S
 For your consideration, here are two ways for implementing state management.
 
 For the Signals implementation, the `freezeArgs` decorator is used; it freezes the object in the same way that NgRx does.
+
+### ZoneLess & OnPush
+
+[**Source file:** zoneless.ts](src/ia/zoneless.ts)
+
+**Briefly**
+
+Behaviours in `Zoneless` application with `Default` and `OnPush` change detection strategy.
+
+**Usage**
+
+```HTML
+<ia-zoneless-container></ia-zoneless-container>
+```
+
+**Details**
+
+Behaviors of Change Detection with `ChangeDetectorRef` (`markForCheck`, `detectChanges`)
+
+* `async` Pipe calls `ChangeDetectorRef.markForCheck` automatically.
+
+```code
+[level-1](Default):                 -> update
+[level-2](Default): markForCheck()  -> update
+[level-3](Default):                 -> update
+```
+
+```code
+[level-1](Default):                 -> NOT update
+[level-2](Default): detectChanges() -> update
+[level-3](Default):                 -> update
+```
+
+```code
+[level-1](OnPush):                 -> update
+[level-2](OnPush): markForCheck()  -> update
+[level-3](OnPush):                 -> NOT update
+```
+
+```code
+[level-1](OnPush):                  -> NOT update
+[level-2](OnPush): detectChanges()  -> update
+[level-3](OnPush):                  -> NOT update
+```
+
+The **Asymmetric Change Detection** error occurs when a parent component using the `Default` strategy
+updates a simple bound value in its template during the same change detection cycle in which a child component
+updates a `Signal` that is `read within the template`.
+
+```code
+[level-1](Default):                 -> ExpressionChangedAfterItHasBeenChecked
+[level-2](Default): signal.set()    -> update
+[level-3](Default):                 -> update
+```
+
+```code
+[level-1](OnPush):                 -> NOT update
+[level-2](OnPush): signal.set()    -> update
+[level-3](OnPush):                 -> NOT update
+```
+
+**It's recommended to move the application to a `zoneless` and `OnPush` strategy with reactive values (`Signals` or `Observables`).**
+
+Calls change detection automatically:
+
+* `async` Pipe calls `ChangeDetectorRef.markForCheck`
+* Updating a `signal` that's `read in a template`
+
+Untested yet
+
+* `ComponentRef.setInput`
+* Bound host or template listeners callbacks
+* Attaching a view that was marked dirty by one of the above

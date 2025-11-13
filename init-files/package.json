@@ -2,17 +2,18 @@
   "name": "impossibel_angular",
   "version": "1.0.0",
   "scripts": {
-    "reset": "node projects",
-    "dynamic-providers": "node projects dynamic-providers & ng serve",
-    "dynamic-injector": "node projects dynamic-injector & ng serve",
-    "dynamic-input": "node projects dynamic-input & ng serve",
-    "self-vs-host": "node projects self-vs-host & ng serve",
-    "directives": "node projects directives & ng serve",
-    "pipes": "node projects pipes & ng serve",
-    "rxjs": "node projects rxjs & ng serve",
-    "forward-ref": "node projects forward-ref & ng serve",
-    "cva": "node projects cva & ng serve",
-    "ngrx-vs-signal": "node projects ngrx-vs-signal & ng serve"
+    "reset": "node projects.ts",
+    "dynamic-providers": "node projects.ts dynamic-providers & ng serve",
+    "dynamic-injector": "node projects.ts dynamic-injector & ng serve",
+    "dynamic-input": "node projects.ts dynamic-input & ng serve",
+    "self-vs-host": "node projects.ts self-vs-host & ng serve",
+    "directives": "node projects.ts directives & ng serve",
+    "pipes": "node projects.ts pipes & ng serve",
+    "rxjs": "node projects.ts rxjs & ng serve",
+    "forward-ref": "node projects.ts forward-ref & ng serve",
+    "cva": "node projects.ts cva & ng serve",
+    "ngrx-vs-signal": "node projects.ts ngrx-vs-signal & ng serve",
+    "zoneless": "node projects.ts zoneless & ng serve"
   },
   "prettier": {
     "printWidth": 100,
@@ -41,6 +42,7 @@
     "@angular/build": "^20.3.2",
     "@angular/cli": "^20.3.2",
     "@angular/compiler-cli": "^20.3.0",
+    "@types/node": "^24.10.1",
     "typescript": "~5.9.2"
   }
 }
