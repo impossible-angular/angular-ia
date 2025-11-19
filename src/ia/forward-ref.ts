@@ -11,7 +11,7 @@ import { Component, forwardRef, inject, InjectionToken } from '@angular/core'
  * <ia-parent></ia-parent>
  */
 
-export const PARENT_COMPONENT = new InjectionToken<ParentComponent>('Parent Component Instance')
+export const IA_PARENT_COMPONENT = new InjectionToken<ParentComponent>('Parent Component Instance')
 
 @Component({
     selector: 'ia-child',
@@ -19,7 +19,7 @@ export const PARENT_COMPONENT = new InjectionToken<ParentComponent>('Parent Comp
 })
 export class ChildComponent {
     // Inject parent component throw InjectionToken
-    private parent = inject<ParentComponent>(PARENT_COMPONENT)
+    private parent = inject<ParentComponent>(IA_PARENT_COMPONENT)
 
     constructor() {
         this.parent.greet('ChildComponent')
@@ -34,11 +34,11 @@ export class ChildComponent {
         <ia-child></ia-child>
     `,
     imports: [ChildComponent],
-    // *** This is where the circular reference occurs ***
     providers: [
         {
-            provide: PARENT_COMPONENT,
-            // 2. Alias: Use the existing instance of ParentComponent (the component itself)
+            // *** This is where the circular reference occurs ***
+            provide: IA_PARENT_COMPONENT,
+            // Alias: Use the existing instance of ParentComponent (the component itself)
             //    This is where we must use forwardRef, as ParentComponent is not fully
             //    defined yet when the providers array is evaluated.
             useExisting: forwardRef(() => ParentComponent)

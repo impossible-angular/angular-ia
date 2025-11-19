@@ -16,9 +16,10 @@ import {
     retry,
     scan,
     Subject,
-    switchMap, take,
+    switchMap,
+    take,
     takeUntil,
-    takeWhile,
+    throwError,
     timer,
     withLatestFrom
 } from 'rxjs'
@@ -37,13 +38,13 @@ import { tap } from 'rxjs/operators'
     selector: 'ia-rxjs-container',
     template: `
         <h2>Uncomment the function you want to use in the constructor and check the Console output.</h2>
-        
+
         <p>* <b>of</b>: emits an array as a single value and as separate values as well.</p>
         <p>* <b>from</b>: emits contents of array as separate values.</p>
         <p>* <b>retry</b>: an error handling operator that resubscribes to the source observable if it throws an error.</p>
         <p>* <b>catchError</b>: an error handling operator that intercepts an error in the observable stream.</p>
-        <p>* <b>Higher</b>rder mapping**: to get the result from one Observable and send it to another. Using switchMap, mergeMap, concatMap depends on the incoming stream.</p>
-        <p>* <b>switchMap</b> - cancels any previous inner observable subscriptions that are still in progress.</p>
+        <p>* <b>higher order mapping</b>: to get the result from one Observable and send it to another. Using switchMap, mergeMap, concatMap depends on the incoming stream.</p>
+        <p>* <b>switchMap</b> - takes last one and cancels any previous inner observable subscriptions that are still in progress.</p>
         <p>* <b>mergeMap</b> - subscribes to all inner observables concurrently.</p>
         <p>* <b>concatMap</b> - subscribes to inner observables one at a time.</p>
         <p>* <b>forkJoin</b> - runs all observables in parallel and waits for all of them to complete, return array of values.</p>
@@ -58,7 +59,7 @@ import { tap } from 'rxjs/operators'
 })
 export class RxjsContainerComponent {
     constructor() {
-        // static_of_from()
+        static_of_from()
         // map_retry_catchError()
         // higherOrderMapping()
         // map_switchMap()
@@ -69,21 +70,23 @@ export class RxjsContainerComponent {
         // tick() // take, takeWhile
         // takeUntil_Signal()
         // takeUntil_Subject()
+        // takeUntil_timer()
         // static_scan()
         // map_withLatestFrom()
-        timerTap()
+        // timerTap()
     }
 }
+
 
 const static_of_from = () => {
     title('rxjs functions: of, from')
     tick()
-    of([1, 2, 3]).pipe(delay(1000), tap(value => console.warn('of - Array of([1,2,3])', value))).subscribe()
-    of(1, 2, 3).pipe(delay(2000), tap(value => console.warn('of - by commas of(1,2,3)', value))).subscribe()
-    from([1, 2, 3]).pipe(delay(3000), tap(value => console.warn('from - Array from([1,2,3])', value))).subscribe()
+    of([1, 2, 3]).pipe(delay(1000), tap(value => console.warn('of([1,2,3]) - from array => ', value))).subscribe()
+    of(1, 2, 3).pipe(delay(2000), tap(value => console.warn('of(1,2,3) - by commas separated => ', value))).subscribe()
+    from([1, 2, 3]).pipe(delay(3000), tap(value => console.warn('from([1,2,3]) - from array => ', value))).subscribe()
 }
 
-//
+
 const map_retry_catchError = () => {
     title('retry: resubscribes to the source after failure')
     title('catchError: intercepts an error in the observable stream')
@@ -99,7 +102,7 @@ const map_retry_catchError = () => {
             subscriber.error(new Error(err))
         } else {
             // Succeed on the fourth attempt
-            subscriber.next([1,2,3])
+            subscriber.next([1, 2, 3])
             subscriber.complete()
         }
     })
@@ -108,11 +111,11 @@ const map_retry_catchError = () => {
     setTimeout(() =>
             unstableRequest.pipe(
                 // 1. Log the error before retry kicks in
-                // catchError(err => {
-                //     console.error(`Error detected: ${err.message}`)
-                //     // Re-throw the error to trigger the retry mechanism
-                //     return throwError(() => err)
-                // }),
+                catchError(err => {
+                    console.error(`Error detected: ${err.message}`)
+                    // Re-throw the error to trigger the retry mechanism
+                    return throwError(() => err)
+                }),
                 // 2. The core mechanism: Retry the Observable up to 3 times with delay 1s
                 // retry(3),
                 retry({count: 3, delay: 1000}),
@@ -125,9 +128,13 @@ const map_retry_catchError = () => {
         , 100)
 }
 
+
 const title = (values: string) => setTimeout(() => console.warn(values), 100)
 
-const obs = (val: number) => of(val).pipe(delay(val * 1000))
+const obs = (val: number) => of(val).pipe(
+    delay(val * 1000),
+    tap(value => console.warn(`obs[${value}$:${value}s]=>${value}`))
+)
 
 const tick = () => {
     interval(1000)
@@ -136,62 +143,63 @@ const tick = () => {
         .subscribe({next: (value) => console.log(`tick: ${value + 1}s`)})
 }
 
+
 const higherOrderMapping = () => {
-    title('To get the result from one Observable and send it to another. Using switchMap')
+    title('Higher order mapping - to get the result from one Observable and send it to another. Using switchMap')
     tick()
     return obs(1)
         .pipe(
-            tap((value) => console.warn(`higherOrderMapping 1 - ${value}s`)),
+            tap((value) => console.warn(`[${value}] => obs([${value}]+1) => ${value + 1}`)),
             switchMap(value => obs(value + 1)),
-            tap((value) => console.warn(`higherOrderMapping switchMap 2 - ${value}s`)),
+            tap((value) => console.warn(`[${value}] => obs([${value}]+1) => ${value + 1}`)),
             switchMap(value => obs(value + 1)),
-            tap((value) => console.warn(`higherOrderMapping switchMap 3 - ${value}s`))
+            tap((value) => console.warn(`[${value}] => obs([${value}]+1) => ${value + 1}`))
         ).subscribe()
 }
 
 const map_switchMap = () => {
-    title('switchMap [3$,2$,1$] - cancels any previous inner observable subscriptions that are still in progress')
+    title('switchMap - take last one and cancels any previous inner observable subscriptions that are still in progress')
     tick()
-    return of(obs(3), obs(2), obs(1))
+    return of(obs(3), obs(1), obs(2))
         .pipe(
             switchMap(value => value),
-            tap(value => console.warn(`switchMap - ${value}`))
+            tap(value => console.warn(`[3s]$, [1s]$, [2s]$ - switchMap => ${value}`))
         ).subscribe()
 }
 
 const map_mergeMap = () => {
-    title('mergeMap [3$,2$,1$] - subscribes to all inner observables concurrently')
+    title('mergeMap - subscribes to all inner observables CONCURRENTLY')
     tick()
-    return of(obs(3), obs(2), obs(1))
+    return of(obs(3), obs(1), obs(2))
         .pipe(
             mergeMap(value => value),
-            tap((value) => console.warn(`mergeMap - ${value}`))
+            tap((value) => console.warn(`[3s]$, [1s]$, [2s]$ - mergeMap - ${value}`))
         ).subscribe()
 }
 
 const map_concatMap = () => {
-    title('concatMap [3$,2$,1$] - subscribes to inner observables one at a time')
+    title('concatMap - subscribes to inner observables one at a time (CONSECUTIVELY)')
     tick()
-    return of(obs(3), obs(2), obs(1))
+    return of(obs(3), obs(1), obs(2))
         .pipe(
             concatMap(value => value),
-            tap((value) => console.warn(`concatMap - ${value}s`))
+            tap((value) => console.warn(`[3s]$, [1s]$, [2s]$ - concatMap - ${value}`))
         ).subscribe()
 }
 
 const static_forkJoin = () => {
-    title('forkJoin [3$,2$,1$] - runs all observables in parallel and waits for all of them to complete')
+    title('forkJoin [3$, 1$, 2$] - runs all observables in parallel and waits for all of them to complete')
     tick()
-    forkJoin([obs(3), obs(2), obs(1)])
+    forkJoin([obs(3), obs(1), obs(2)])
         .pipe(
-            tap((value) => console.warn(`forkJoin [${value}]`))
+            tap((value) => console.warn(`[3s]$, [1s]$, [2s]$ - forkJoin => [${value}]`))
         ).subscribe()
 }
 
 const static_concat = () => {
-    title('concat [3$,2$,1$] - chains observables together, running them sequentially, one-by-one manner')
+    title('concat [3$, 1$, 2$] - chains observables together, running them SEQUENTIALLY, one-by-one manner')
     tick()
-    concat(obs(3), obs(2), obs(1))
+    concat(obs(3), obs(1), obs(2))
         .pipe(
             tap((value) => console.warn(`concat ${value}s`))
         ).subscribe()
@@ -239,14 +247,27 @@ const takeUntil_Subject = () => {
     setTimeout(() => stopSubject.next(true), 5000)
 }
 
+const takeUntil_timer = () => {
+    title('To stop stream used takeUntil which triggered by timer')
+    tick()
+    interval(1000)
+        .pipe(
+            takeUntil(timer(5000))
+        )
+        .subscribe({
+            next: (value) => console.warn('takeUntil=>', value),
+            complete: () => console.warn('Observable stopped by Timer 5s!')
+        })
+}
+
 const static_scan = () => {
     title('scan - handling continuous accumulation and emission of values.')
     tick()
     // sum elements
     of(obs(1), obs(2), obs(3))
         .pipe(
-            delay(10),
-            tap(() => title('rxjs function: scan((acc, curr) => acc + curr, 0) to sum elements')),
+            delay(110),
+            tap(() => console.warn('scan((acc, curr) => acc + curr, 0) to sum elements')),
             mergeMap((value) => value),
             tap(value => console.warn('value: ', value)),
             scan((acc, curr) => acc + curr, 0),
@@ -256,7 +277,7 @@ const static_scan = () => {
     of(obs(1), obs(2), obs(3))
         .pipe(
             delay(5000),
-            tap(() => title('rxjs function: scan((acc, curr) => [...acc, curr], []) to build array')),
+            tap(() => console.warn('scan((acc, curr) => [...acc, curr], []) to build array')),
             mergeMap((value) => value),
             tap(value => console.warn('value: ', value)),
             scan((acc, curr) => [...acc, curr], [] as number[]),
@@ -278,7 +299,6 @@ const map_withLatestFrom = () => {
 
 // execute function sequentially with daley
 const timerTap = () => {
-
     timer(100).pipe(
         tap(() => console.warn('Call function in tap')),
         delay(2000),

@@ -1,5 +1,15 @@
 import { ChangeDetectorRef, Component, signal } from '@angular/core'
 
+/**
+ * Impossible Angular v20.x.x
+ * Behaviours in Zoneless application with Default and OnPush change detection strategy.
+ * Author: Sergii Lutchyn
+ *
+ * Usage:
+ * <ia-zoneless-container></ia-zoneless-container>
+ */
+
+
 @Component({
     selector: 'ia-level-3',
     template: ` L3=[{{ value }}]`

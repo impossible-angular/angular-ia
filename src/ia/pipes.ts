@@ -2,6 +2,17 @@ import { ChangeDetectionStrategy, Component, inject, LOCALE_ID, Pipe, PipeTransf
 import { interval, Observable, Subscription } from 'rxjs'
 import { DatePipe } from '@angular/common'
 
+
+/**
+ * Impossible Angular v20.x.x
+ * Examples of Custom `async` Pipe and Extensions of Angular Core Pipes
+ * Author: Sergii Lutchyn
+ *
+ * Usage:
+ * <ia-pipes-container></ia-pipes-container>
+ */
+
+
 @Pipe({
     name: 'iaAsync',
     pure: false

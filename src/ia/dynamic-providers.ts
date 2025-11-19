@@ -48,11 +48,11 @@ export class VegetablesDirective {
 @Component({
   selector: 'ia-widget',
   template: `
-    <h1>{{ food.label }}</h1>
-    @for (item of food.list; track item) {
-      <p>{{ item }}</p>
-    }
-`,
+      <h1>{{ food.label }}</h1>
+      @for (item of food.list; track item) {
+          <p>{{ item }}</p>
+      }
+  `,
   styles: `
     :host {
       display: block;

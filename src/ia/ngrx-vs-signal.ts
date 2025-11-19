@@ -56,6 +56,7 @@ export const selectItems = createSelector(
 // ****************** Service with Signals implementation ******************
 
 // This decorator is used to freeze input parameters in the method.
+// That's how NgRx works
 const FreezeArgs = (
     target: any,
     propertyKey: string,
