@@ -1,6 +1,7 @@
 import { Component, signal, WritableSignal } from '@angular/core'
 import { toObservable } from '@angular/core/rxjs-interop'
 import {
+    auditTime,
     catchError,
     concat,
     concatMap,
@@ -15,6 +16,7 @@ import {
     of,
     retry,
     scan,
+    shareReplay,
     Subject,
     switchMap,
     take,
@@ -55,6 +57,8 @@ import { tap } from 'rxjs/operators'
         <p>* <b>scan</b> - handling continuous accumulation and emission of values, similar to .reduce((acc, cur)) function in array.</p>
         <p>* <b>withLatestFrom</b> - combine main stream with one or more others.</p>
         <p>* <b>tap</b> - execute function sequentially.</p>
+        <p>* <b>auditTime</b> - waits for a specified time interval (the duration) to pass after the source Observable.</p>
+        <p>* <b>shareReplay</b> - is to multicast a source Observable and buffer a specified number of its latest values.</p>
     `
 })
 export class RxjsContainerComponent {
@@ -74,6 +78,8 @@ export class RxjsContainerComponent {
         // static_scan()
         // map_withLatestFrom()
         // timerTap()
+        // map_auditTime()
+        // map_shareReply()
     }
 }
 
@@ -306,4 +312,42 @@ const timerTap = () => {
         delay(2000),
         tap(() => console.warn('Call after another 2s'))
     ).subscribe()
+}
+
+const map_auditTime = () => {
+    title('scan - handling continuous accumulation and emission of values.')
+
+    interval(1000).pipe(take(20))
+        .pipe(
+            tap(value => console.warn(value)),
+            // Wait 5s after the first emission to output the latest value.
+            // Then wait for a *new* source emission to start the clock again.
+            auditTime(5000),
+            tap(value => console.log(`Audited value: ${value} (Received after 5s debounce period)`))
+        ).subscribe()
+}
+
+const map_shareReply = () => {
+    // shareReplay(1) is a common configuration: multicast, and replay the last 2 value.
+    const REPLAY_COUNT = 2
+    // We'll use this Observable to simulate a long-running HTTP request
+    const EXPENSIVE_SOURCE$ = interval(1000).pipe(
+        take(5), // Emit 0, 1, 2
+        // Use 'tap' to log when the source Observable is executed
+        tap(value => console.warn(`Emitted: ${value}`))
+    )
+
+    // 1. Create the Multicast Observable using shareReplay
+    const sharedObservable$ = EXPENSIVE_SOURCE$.pipe(
+        shareReplay(REPLAY_COUNT)
+    )
+
+    console.log('--- SUBSCRIBER A subscribes (Triggers Source) ---')
+    sharedObservable$.subscribe(a => console.log(`Subscriber A: ${a}`))
+    // Wait a moment for the source to emit a couple of values (0 and 1)
+    setTimeout(() => {
+        console.log('\n--- SUBSCRIBER B subscribes (Replays Value, Does NOT Trigger Source) ---')
+        // Subscriber B subscribes *after* 0 and 1 have been emitted.
+        sharedObservable$.subscribe(b => console.log(`Subscriber B: ${b}`))
+    }, 2500)
 }
