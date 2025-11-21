@@ -1,6 +1,9 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
+  "cli": {
+    "packageManager": "npm"
+  },
   "newProjectRoot": "projects",
   "projects": {
     "angular": {
@@ -89,14 +92,8 @@
             }
           },
           "defaultConfiguration": "development"
-        },
-        "extract-i18n": {
-          "builder": "@angular/build:extract-i18n"
         }
       }
     }
-  },
-  "cli": {
-    "analytics": "f8cc3342-ec40-4a2b-a6da-e69ca26235d2"
   }
 }

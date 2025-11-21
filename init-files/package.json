@@ -9,12 +9,12 @@
     "self-vs-host": "node projects.ts self-vs-host & ng serve",
     "directives": "node projects.ts directives & ng serve",
     "pipes": "node projects.ts pipes & ng serve",
+    "routes": "node projects.ts routes & ng serve",
     "rxjs": "node projects.ts rxjs & ng serve",
     "forward-ref": "node projects.ts forward-ref & ng serve",
     "cva": "node projects.ts cva & ng serve",
     "ngrx-vs-signal": "node projects.ts ngrx-vs-signal & ng serve",
-    "zoneless": "node projects.ts zoneless & ng serve",
-    "routes": "node projects.ts routes & ng serve"
+    "zoneless": "node projects.ts zoneless & ng serve"
   },
   "prettier": {
     "printWidth": 100,
@@ -29,21 +29,24 @@
     ]
   },
   "private": true,
+  "packageManager": "npm@11.6.3",
   "dependencies": {
-    "@angular/common": "^20.3.0",
-    "@angular/compiler": "^20.3.0",
-    "@angular/core": "^20.3.0",
-    "@angular/forms": "^20.3.0",
-    "@angular/platform-browser": "^20.3.0",
-    "@angular/router": "^20.3.0",
+    "@angular/common": "^21.0.0",
+    "@angular/compiler": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "@angular/forms": "^21.0.0",
+    "@angular/platform-browser": "^21.0.0",
+    "@angular/router": "^21.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@angular/build": "^20.3.2",
-    "@angular/cli": "^20.3.2",
-    "@angular/compiler-cli": "^20.3.0",
+    "@angular/build": "^21.0.0",
+    "@angular/cli": "^21.0.0",
+    "@angular/compiler-cli": "^21.0.0",
+    "jsdom": "^27.1.0",
     "@types/node": "^24.10.1",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "vitest": "^4.0.8"
   }
 }
