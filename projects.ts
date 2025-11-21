@@ -15,6 +15,7 @@ const FORWARD_REF = 'forward-ref'
 const CVA = 'cva'
 const NGRX_VS_SIGNAL = 'ngrx-vs-signal'
 const ZONELESS = 'zoneless'
+const ROUTES = 'routes'
 
 const INIT_APP = resolve('init-files/app.ts')
 const INIT_APP_CONFIG = resolve('init-files/app.config.ts')
@@ -85,7 +86,7 @@ const replaceInFile = (filePath: string, searchString: string) => {
 
 const tsconfigInclude = replaceInFile(resolve('tsconfig.app.json'), '"include": [')
 const appTemplate = replaceInFile(FILE_APP, 'template: `')
-const appImports = replaceInFile(FILE_APP, 'imports: [')
+const appImportsArr = replaceInFile(FILE_APP, 'imports: [')
 const appImportFrom = replaceInFile(FILE_APP, 'from \'@angular/core\'')
 const mainBootstrap = replaceInFile(FILE_MAIN, 'bootstrapApplication(App, appConfig)')
 const mainImportFrom = replaceInFile(FILE_MAIN, 'from \'./app/app\'')
@@ -97,14 +98,14 @@ const packageAdd = replaceInFile(FILE_PACKAGE, '"tslib": "^2.3.0"')
 const dynamicProvidersProject = async () => {
     await tsconfigInclude(`\n    "src/**/dynamic-providers.ts",`)
     await appTemplate('<ia-widget-container></ia-widget-container>')
-    await appImports('WidgetContainerComponent')
+    await appImportsArr('WidgetContainerComponent')
     await appImportFrom('\nimport { WidgetContainerComponent } from \'@ia/dynamic-providers\'')
 }
 
 const dynamicInjectorProject = async () => {
     await tsconfigInclude(`\n    "src/**/dynamic-injector.ts",`)
     await appTemplate('<ia-injector-container></ia-injector-container>')
-    await appImports('InjectorContainerComponent')
+    await appImportsArr('InjectorContainerComponent')
     await appImportFrom('\nimport { InjectorContainerComponent } from \'@ia/dynamic-injector\'')
 
     await mainBootstrap('\n    .then((app) => setAppInjector(app.injector))')
@@ -114,56 +115,67 @@ const dynamicInjectorProject = async () => {
 const dynInputProject = async () => {
     await tsconfigInclude(`\n    "src/**/dynamic.input.ts",`)
     await appTemplate('<ia-dyn-input></ia-dyn-input>')
-    await appImports('DynInputComponent')
+    await appImportsArr('DynInputComponent')
     await appImportFrom('\nimport { DynInputComponent } from \'@ia/dynamic-input\'')
 }
 
 const selfHostProject = async () => {
     await tsconfigInclude(`\n    "src/**/self-vs-host.ts",`)
     await appTemplate('<ia-self-host-container></ia-self-host-container>')
-    await appImports('SelfHostContainerComponent')
+    await appImportsArr('SelfHostContainerComponent')
     await appImportFrom('\nimport { SelfHostContainerComponent } from \'@ia/self-vs-host\'')
 }
 
 const directivesProject = async () => {
     await tsconfigInclude(`\n    "src/**/directives.ts",`)
     await appTemplate('<ia-directives-container></ia-directives-container>')
-    await appImports('DirectivesContainerComponent')
+    await appImportsArr('DirectivesContainerComponent')
     await appImportFrom('\nimport { DirectivesContainerComponent } from \'@ia/directives\'')
 }
 
 const pipesProject = async () => {
     await tsconfigInclude(`\n    "src/**/pipes.ts",`)
     await appTemplate('<ia-pipes-container></ia-pipes-container>')
-    await appImports('PipesContainerComponent')
+    await appImportsArr('PipesContainerComponent')
     await appImportFrom('\nimport { PipesContainerComponent } from \'@ia/pipes\'')
+}
+
+const routesProject = async () => {
+    await tsconfigInclude(`\n    "src/**/routes.ts",`)
+    await appTemplate('<ia-routes-container></ia-routes-container>')
+    await appImportsArr('RoutesContainerComponent')
+    await appImportFrom('\nimport { RoutesContainerComponent } from \'@ia/routes\'')
+
+    await appConfigProviders(',\n        provideRouter(routes)')
+    await appConfigImportFrom('\nimport { routes } from \'@ia/routes\'')
+    await appConfigImportFrom('\nimport { provideRouter } from \'@angular/router\'')
 }
 
 const rxjsProject = async () => {
     await tsconfigInclude(`\n    "src/**/rxjs.ts",`)
     await appTemplate('<ia-rxjs-container></ia-rxjs-container>')
-    await appImports('RxjsContainerComponent')
+    await appImportsArr('RxjsContainerComponent')
     await appImportFrom('\nimport { RxjsContainerComponent } from \'@ia/rxjs\'')
 }
 
 const forwardRefProject = async () => {
     await tsconfigInclude(`\n    "src/**/forward-ref.ts",`)
     await appTemplate('<ia-parent></ia-parent>')
-    await appImports('ParentComponent')
+    await appImportsArr('ParentComponent')
     await appImportFrom('\nimport { ParentComponent } from \'@ia/forward-ref\'')
 }
 
 const cvaProject = async () => {
     await tsconfigInclude(`\n    "src/**/cva.ts",`)
     await appTemplate('<ia-cva-container></ia-cva-container>')
-    await appImports('CvaContainerComponent')
+    await appImportsArr('CvaContainerComponent')
     await appImportFrom('\nimport { CvaContainerComponent } from \'@ia/cva\'')
 }
 
 const ngrxSignalProject = async () => {
     await tsconfigInclude(`\n    "src/**/ngrx-vs-signal.ts",`)
     await appTemplate('<ia-ngrx-signal></ia-ngrx-signal>')
-    await appImports('NgrxSignalComponent')
+    await appImportsArr('NgrxSignalComponent')
     await appImportFrom('\nimport { NgrxSignalComponent } from \'@ia/ngrx-vs-signal\'')
 
     await packageAdd(',\n    "@ngrx/store": "^20.1.0"')
@@ -175,9 +187,10 @@ const ngrxSignalProject = async () => {
 const zoneLessProject = async () => {
     await tsconfigInclude(`\n    "src/**/zoneless.ts",`)
     await appTemplate('<ia-zoneless-container></ia-zoneless-container>')
-    await appImports('ZoneLessContainerComponent')
+    await appImportsArr('ZoneLessContainerComponent')
     await appImportFrom('\nimport { ZoneLessContainerComponent } from \'@ia/zoneless\'')
 }
+
 
 await resetProject()
 
@@ -199,6 +212,9 @@ switch (projectName) {
         break
     case PIPES:
         await pipesProject()
+        break
+    case ROUTES:
+        await routesProject()
         break
     case RXJS:
         await rxjsProject()
@@ -232,6 +248,7 @@ project-name:
   ${CVA}
   ${NGRX_VS_SIGNAL}
   ${ZONELESS}
+  ${ROUTES}
 `)
 }
 

@@ -10,6 +10,7 @@
     - [ng commands](#ng-commands)
     - [Directives](#directives)
     - [Pipes](#pipes)
+    - [Routes](#routes)
     - [RxJS](#rxjs)
     - [Circular dependency with forwardRef](#circular-dependency-with-forwardref)
     - [Simplified implementation of ControlValueAccessor (CVA)](#simplified-implementation-of-controlvalueaccessor-cva)
@@ -350,6 +351,36 @@ export class AsyncComponent {
     value = interval(1000)
 }
 ```
+
+
+### Routes
+
+[**Source file:** routes.ts](src/ia/routes.ts)
+
+**Briefly**
+
+Angular Routing: 4 ways to send data through the router and 3 ways to access the current URL and state/history.
+
+**Usage**
+
+```HTML
+<ia-routes-container></ia-routes-container>
+```
+**Details**
+
+Angular Router Data Flow:
+
+4 Ways to Pass Data:
+* URL parameters
+* Query parameters
+* Router state data
+* Router resolver data
+
+3 Ways to Get URL/History:
+* Using the Router service (.events/observables)
+* Using the Router service (.url property)
+* ActivatedRoute service (snapshots/observables).
+
 
 ### RxJS
 

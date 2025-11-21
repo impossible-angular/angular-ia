@@ -13,7 +13,8 @@
     "forward-ref": "node projects.ts forward-ref & ng serve",
     "cva": "node projects.ts cva & ng serve",
     "ngrx-vs-signal": "node projects.ts ngrx-vs-signal & ng serve",
-    "zoneless": "node projects.ts zoneless & ng serve"
+    "zoneless": "node projects.ts zoneless & ng serve",
+    "routes": "node projects.ts routes & ng serve"
   },
   "prettier": {
     "printWidth": 100,

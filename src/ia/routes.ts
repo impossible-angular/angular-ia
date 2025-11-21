@@ -1,0 +1,116 @@
+import { Component, inject, Injectable } from '@angular/core'
+import { ActivatedRoute, NavigationEnd, ResolveFn, Router, RouterLink, RouterOutlet, Routes } from '@angular/router'
+import { AsyncPipe, JsonPipe } from '@angular/common'
+import { filter, Observable, of } from 'rxjs'
+
+/**
+ * Impossible Angular v20.x.x
+ * Angular Routing: 4 ways to send data through the router and 3 ways to access the current URL and state/history.
+ * Author: Sergii Lutchyn
+ *
+ * Angular Router Data Flow:
+ * 4 Ways to Pass Data:
+ *      URL parameters
+ *      Query parameters
+ *      Router state data
+ *      Router resolver data
+ *
+ * 3 Ways to Get URL/History:
+ *      Using the Router service (.events/observables)
+ *      Using the Router service (.url property)
+ *      ActivatedRoute service (snapshots/observables).
+ *
+ * Usage:
+ * <ia-routes-container></ia-routes-container>
+ */
+
+@Injectable({providedIn: 'root'})
+export class NavHistoryService {
+    readonly navHistory: Array<string> = []
+
+    constructor(router: Router) {
+        router.events
+            .pipe(
+                filter(event => event instanceof NavigationEnd)
+            )
+            .subscribe((event: any) => {
+                console.debug('NavigationEnd', event.url, event)
+                this.navHistory.push(event.url)
+            })
+    }
+
+}
+
+@Component({
+    selector: 'ia-home',
+    template: `HOME COMPONENT`
+})
+export class HomeComponent {
+}
+
+@Component({
+    selector: 'ia-page',
+    imports: [
+        AsyncPipe,
+        JsonPipe
+    ],
+    template: `
+        @let params = activatedRoute.params | async | json;
+        @if (params !== '{}') {
+            <h4>activatedRoute.params: {{ params }}</h4>
+            <h4>static router data: {{ activatedRoute.data | async | json }}</h4>
+        }
+        @let query = activatedRoute.queryParams | async | json;
+        @if (query !== '{}') {
+            <h4>activatedRoute.queryParams: {{ query }}</h4>
+            <h4>resolver router data: {{ activatedRoute.data | async | json }}</h4>
+        }
+        Router: url => {{ router.url }}<br>
+        ActivatedRoute: snapshot.url => {{ activatedRoute.snapshot.url }}
+    `
+})
+export class PageComponent {
+    activatedRoute = inject(ActivatedRoute)
+    router = inject(Router)
+}
+
+@Component({
+    selector: 'ia-routes-container',
+    imports: [
+        RouterOutlet,
+        RouterLink
+    ],
+    template: `
+        <a [routerLink]="'home'">Home</a>
+        <a [routerLink]="'details/id-1'">params (id-1)</a>
+        <a [routerLink]="'details'" [queryParams]="{q:'id-2'}">queryParams (id-2)</a>
+        <hr>
+        <router-outlet></router-outlet>
+        <hr>
+        <h4>Navigation history from Router.events</h4>
+        <p>
+            @for (url of nav.navHistory; track $index) {
+                <code>{{ $index }} => {{ url }}</code><br>
+            }
+        </p>
+    `,
+    styles: [`
+      a {
+        margin: 10px;
+      }
+    `]
+})
+export class RoutesContainerComponent {
+    nav = inject(NavHistoryService)
+}
+
+export const detailsResolver: ResolveFn<Observable<any>> = () => {
+    return of('Hello from router resolver')
+}
+
+export const routes: Routes = [
+    {path: 'home', component: HomeComponent},
+    {path: 'details/:id', component: PageComponent, data: {title: 'Hello data router'}},
+    {path: 'details', component: PageComponent, resolve: {title: detailsResolver}},
+    {path: '', redirectTo: '/home', pathMatch: 'full'}
+]
