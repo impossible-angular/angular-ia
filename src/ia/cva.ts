@@ -2,7 +2,7 @@ import { Component, Directive, effect, forwardRef, inject, InjectionToken, input
 import { FormsModule } from '@angular/forms'
 
 /**
- * Impossible Angular v20.x.x
+ * Impossible Angular v21.x.x
  * Simplified implementation of ControlValueAccessor (CVA)
  * Author: Sergii Lutchyn
  *

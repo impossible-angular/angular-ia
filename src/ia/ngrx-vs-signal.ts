@@ -4,7 +4,7 @@ import { createActionGroup, createFeatureSelector, createReducer, createSelector
 import { AsyncPipe } from '@angular/common'
 
 /**
- * Impossible Angular v20.x.x
+ * Impossible Angular v20.x.x ========>>>>>>>>>>> ngrx@store now supported Angular 21
  * NgRx vs Signal
  * Author: Sergii Lutchyn
  *

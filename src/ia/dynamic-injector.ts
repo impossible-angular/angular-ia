@@ -1,7 +1,7 @@
 import { Component, inject, Injectable, Injector } from '@angular/core'
 
 /**
- * Impossible Angular v20.x.x
+ * Impossible Angular v21.x.x
  * Dynamic Injector
  * Author: Sergii Lutchyn
  *

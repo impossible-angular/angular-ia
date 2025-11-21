@@ -28,7 +28,7 @@ import {
 import { tap } from 'rxjs/operators'
 
 /**
- * Impossible Angular v20.x.x
+ * Impossible Angular v21.x.x
  * An example of common usage of RxJS functions.
  * Author: Sergii Lutchyn
  *

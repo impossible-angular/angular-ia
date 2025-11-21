@@ -1,7 +1,7 @@
 import { Component, Directive, inject, Injectable, InjectionToken, ViewContainerRef } from '@angular/core'
 
 /**
- * Impossible Angular v20.x.x
+ * Impossible Angular v21.x.x
  * Dynamic Providers
  * Author: Sergii Lutchyn
  *

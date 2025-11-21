@@ -1,7 +1,7 @@
 import { Component, forwardRef, inject, InjectionToken } from '@angular/core'
 
 /**
- * Impossible Angular v20.x.x
+ * Impossible Angular v21.x.x
  * forwardRef & circular dependency
  * Author: Sergii Lutchyn
  *
@@ -15,7 +15,7 @@ export const IA_PARENT_COMPONENT = new InjectionToken<ParentComponent>('Parent C
 
 @Component({
     selector: 'ia-child',
-    template: `<h3>Child call parent's method. <u>this.parent.greet('ChildComponent')</u>. Check Console</h3>`
+    template: `<code>Child call parent's method => <b>.greet('ChildComponent')</b>. Check Console.</code>`
 })
 export class ChildComponent {
     // Inject parent component throw InjectionToken
@@ -30,7 +30,7 @@ export class ChildComponent {
 @Component({
     selector: 'ia-parent',
     template: `
-        <h2>Parent Component</h2>
+        <h3>Parent Component</h3>
         <ia-child></ia-child>
     `,
     imports: [ChildComponent],

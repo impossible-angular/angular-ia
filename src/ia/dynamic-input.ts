@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, model, signal, ViewContainerRef, WritableSignal } from '@angular/core'
 
 /**
- * Impossible Angular v20.x.x
+ * Impossible Angular v21.x.x
  * Dynamic @Input base on signal
  * Author: Sergii Lutchyn
  *

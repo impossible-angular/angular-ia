@@ -12,7 +12,7 @@ import { ChangeDetectorRef, Component, signal } from '@angular/core'
 
 @Component({
     selector: 'ia-level-3',
-    template: ` L3=[{{ value }}]`
+    template: ` L3 => [{{ value }}]`
     // , changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Level3Component {
@@ -28,8 +28,9 @@ export class Level3Component {
     imports: [
         Level3Component
     ],
-    template: `L2=[{{ valueSig() }}]
-    <!--    L2=[{{ valueObs | async }}]-->
+    template: `L2 => [{{ valueSig() }}]
+    <!--    L2 => [{{ valueObs | async }}]-->
+    <hr>
     <ia-level-3></ia-level-3>`
     // , changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -55,7 +56,8 @@ export class Level2Component {
     imports: [
         Level2Component
     ],
-    template: ` L1=[{{ value }}]
+    template: ` L1 => [{{ value }}]
+    <hr>
     <ia-level-2></ia-level-2>`
     // , changeDetection: ChangeDetectionStrategy.OnPush
 })

@@ -4,7 +4,7 @@ import { DatePipe } from '@angular/common'
 
 
 /**
- * Impossible Angular v20.x.x
+ * Impossible Angular v21.x.x
  * Examples of Custom `async` Pipe and Extensions of Angular Core Pipes
  * Author: Sergii Lutchyn
  *

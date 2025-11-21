@@ -4,7 +4,7 @@ import { AsyncPipe } from '@angular/common'
 import { tap } from 'rxjs/operators'
 
 /**
- * Impossible Angular v20.x.x
+ * Impossible Angular v21.x.x
  * Attribute and structural directives
  * Author: Sergii Lutchyn
  *

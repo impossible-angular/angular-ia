@@ -4,7 +4,7 @@ import { AsyncPipe, JsonPipe } from '@angular/common'
 import { filter, Observable, of } from 'rxjs'
 
 /**
- * Impossible Angular v20.x.x
+ * Impossible Angular v21.x.x
  * Angular Routing: 4 ways to send data through the router and 3 ways to access the current URL and state/history.
  * Author: Sergii Lutchyn
  *
@@ -55,6 +55,7 @@ export class HomeComponent {
         JsonPipe
     ],
     template: `
+        <h3>Details page</h3>
         @let params = activatedRoute.params | async | json;
         @if (params !== '{}') {
             <h4>activatedRoute.params: {{ params }}</h4>
