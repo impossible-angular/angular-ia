@@ -361,6 +361,8 @@ export class AsyncComponent {
 
 Angular Routing: 4 ways to send data through the router and 3 ways to access the current URL and state/history.
 
+Lazy routes & components.
+
 **Usage**
 
 ```HTML
