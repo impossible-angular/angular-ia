@@ -49,6 +49,32 @@ export class HomeComponent {
 }
 
 @Component({
+    selector: 'ia-lazy-child',
+    template: `LAZY CHILD COMPONENT`,
+    styles: [':host{display: block; background: bisque};']
+})
+export class LazyChildComponent {
+}
+
+@Component({
+    selector: 'ia-lazy',
+    imports: [
+        RouterOutlet,
+        RouterLink
+    ],
+    template: `LAZY COMPONENT
+    <hr>
+    <a [routerLink]="'lazy-child'">Lazy child</a>
+    <hr>
+    Child router-outlet
+    <hr>
+    <router-outlet></router-outlet>`,
+    styles: [':host{display: block; background: lightblue}; hr{border-top: 1px solid blue}']
+})
+export class LazyComponent {
+}
+
+@Component({
     selector: 'ia-page',
     imports: [
         AsyncPipe,
@@ -85,6 +111,7 @@ export class PageComponent {
         <a [routerLink]="'home'">Home</a>
         <a [routerLink]="'details/id-1'">params (id-1)</a>
         <a [routerLink]="'details'" [queryParams]="{q:'id-2'}">queryParams (id-2)</a>
+        <a [routerLink]="'lazy'">LAZY routes</a>
         <hr>
         <router-outlet></router-outlet>
         <hr>
@@ -113,5 +140,18 @@ export const routes: Routes = [
     {path: 'home', component: HomeComponent},
     {path: 'details/:id', component: PageComponent, data: {title: 'Hello data router'}},
     {path: 'details', component: PageComponent, resolve: {title: detailsResolver}},
+    // import('@ia/routes').then(mod => mod.lazyRoutes)
+    {path: 'lazy', loadChildren: () => lazyRoutes},
     {path: '', redirectTo: '/home', pathMatch: 'full'}
+]
+
+export const lazyRoutes: Routes = [
+    // import('@ia/routes').then(c => c.LazyComponent)
+    {
+        path: '', loadComponent: () => LazyComponent,
+        children: [
+            {path: 'lazy-child', component: LazyChildComponent}
+        ]
+    },
+    {path: '', redirectTo: '/', pathMatch: 'full'}
 ]
