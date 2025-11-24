@@ -55,8 +55,8 @@ const resetProject = async () => {
     await copyFile(INIT_PACKAGE, FILE_PACKAGE)
 }
 
-const npmInstall = async () => new Promise((resolve, reject) => {
-    const child = spawn('npm', ['install'])
+const npmInstall = async (cmd: string[]) => new Promise((resolve, reject) => {
+    const child = spawn('npm', cmd)
     child.stdout.on('data', (data) => {
         process.stdout.write(data.toString())
     })
@@ -92,7 +92,6 @@ const mainBootstrap = replaceInFile(FILE_MAIN, 'bootstrapApplication(App, appCon
 const mainImportFrom = replaceInFile(FILE_MAIN, 'from \'./app/app\'')
 const appConfigProviders = replaceInFile(FILE_APP_CONFIG, 'provideZonelessChangeDetection()')
 const appConfigImportFrom = replaceInFile(FILE_APP_CONFIG, 'from \'@angular/core\'')
-const packageAdd = replaceInFile(FILE_PACKAGE, '"tslib": "^2.3.0"')
 
 
 const dynamicProvidersProject = async () => {
@@ -173,12 +172,13 @@ const cvaProject = async () => {
 }
 
 const ngrxSignalProject = async () => {
+    await npmInstall(['install', '--legacy-peer-deps', '@ngrx/store'])
+
     await tsconfigInclude(`\n    "src/**/ngrx-vs-signal.ts",`)
     await appTemplate('<ia-ngrx-signal></ia-ngrx-signal>')
     await appImportsArr('NgrxSignalComponent')
     await appImportFrom('\nimport { NgrxSignalComponent } from \'@ia/ngrx-vs-signal\'')
 
-    await packageAdd(',\n    "@ngrx/store": "^20.1.0"')
     await appConfigProviders(',\n        provideStore({itemsState: itemsReducer})')
     await appConfigImportFrom('\nimport { itemsReducer } from \'@ia/ngrx-vs-signal\'')
     await appConfigImportFrom('\nimport { provideStore } from \'@ngrx/store\'')
@@ -252,4 +252,4 @@ project-name:
 `)
 }
 
-await npmInstall()
+await npmInstall(['install'])

@@ -136,6 +136,7 @@ export const detailsResolver: ResolveFn<Observable<any>> = () => {
     return of('Hello from router resolver')
 }
 
+// root routers
 export const routes: Routes = [
     {path: 'home', component: HomeComponent},
     {path: 'details/:id', component: PageComponent, data: {title: 'Hello data router'}},
@@ -145,6 +146,7 @@ export const routes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'}
 ]
 
+// lazy loaded routers
 export const lazyRoutes: Routes = [
     // import('@ia/routes').then(c => c.LazyComponent)
     {

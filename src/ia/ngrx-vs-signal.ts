@@ -4,13 +4,19 @@ import { createActionGroup, createFeatureSelector, createReducer, createSelector
 import { AsyncPipe } from '@angular/common'
 
 /**
- * Impossible Angular v20.x.x ========>>>>>>>>>>> ngrx@store NOT supported Angular 21
+ * Impossible Angular v21.x.x
  * NgRx vs Signal
  * Author: Sergii Lutchyn
  *
  * Compare the implementation of CRUD operations using the NgRx store versus a Service with Signals.
  *
  * Usage:
+ *
+ * npm install --legacy-peer-deps @ngrx/store
+ * then add
+ * provideStore({itemsState: itemsReducer})
+ *
+ * container component
  * <ia-ngrx-signal></ia-ngrx-signal>
  */
 

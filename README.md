@@ -7,7 +7,6 @@
     - [Dynamic @Input](#dynamic-input)
     - [@Self vs @Host](#self-vs-host)
 - [Angular examples](#angular-examples)
-    - [ng commands](#ng-commands)
     - [Directives](#directives)
     - [Pipes](#pipes)
     - [Routes](#routes)
@@ -17,6 +16,9 @@
     - [NgRx install](#ngrx)
     - [NgRx vs Signal](#ngrx-vs-signal)
     - [ZoneLess & OnPush](#zoneless--onpush)
+- [Angular FAQ](#angular-faq)
+    - [ng commands](#ng-commands)
+    - [Environment & App Initializer](#environment--app-initializer)
 
 ### Quick start
 
@@ -267,29 +269,6 @@ Projected component doesn't inject service from parent component with `self: tru
 ```
 
 ## Angular examples
-### ng commands
-
-Install latest `angular cli`
-
-``` shell
-npm install --location=global @angular/cli@latest
-```
-
-The new minimalistic `test` project.
-```shell
-ng new test --minimal --zoneless --style scss --ssr false --ai-config none
-```
-
-Check updates
-```shell
-ng update
-```
-
-Update angular packages
-```shell
-ng update @angular/cli @angular/core
-```
-
 
 ### Directives
 
@@ -692,3 +671,67 @@ Untested yet
 * `ComponentRef.setInput`
 * Bound host or template listeners callbacks
 * Attaching a view that was marked dirty by one of the above
+
+## Angular FAQ
+
+### ng commands
+
+Install latest `angular cli`
+
+``` shell
+npm install --location=global @angular/cli@latest
+```
+
+The new minimalistic `test` project.
+```shell
+ng new test --minimal --zoneless --style scss --ssr false --ai-config none
+```
+
+Check updates
+```shell
+ng update
+```
+
+Update angular packages
+```shell
+ng update @angular/cli @angular/core
+```
+
+Update some packages to with old peer dependency
+```shell
+npm install --legacy-peer-deps @ngrx/store
+```
+
+### Environment & App Initializer
+
+Both `provideEnvironmentInitializer` and `provideAppInitializer` are functions used in Angular to run setup logic before the application fully starts.
+
+* **provideEnvironmentInitializer** 
+  * This runs `before` the root application component is created and rendered.
+  * `Doesn't block` app bootstrap if injected service returns Observable.
+  * Ideal for setting up `environment-level` services like `logging`, `feature flags`, or `theme services`.
+  * It has access to **any providers** defined in the current environment scope.
+* **provideAppInitializer** 
+  * This runs `after` the environment and all providers are configured, but `before` the application's main bootstrap process can complete.
+  * `Block` app bootstrap if injected service returns an Observable; Angular waits until it completes.
+  * Primarily used for loading critical, asynchronous data like `user session details`, necessary `configuration files`, or `feature flags from an API`.
+  * It can safely depend on any service that is provided in the **root injector**.
+
+```angular2html
+@Components(...)
+exports components AppComponent {
+    // Don't use dummy injection or comments: "Don't remove this line"
+    dummyService = inject(SomeDummyService)
+}
+```
+Use `provideEnvironmentInitializer` or `provideAppInitializer`
+```ts
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideEnvironmentInitializer(() => {
+        inject(SomeDummyService)
+    }),
+    provideAppInitializer(...)
+  ]
+}
+```
