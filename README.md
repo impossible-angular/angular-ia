@@ -16,6 +16,7 @@
     - [NgRx install](#ngrx)
     - [NgRx vs Signal](#ngrx-vs-signal)
     - [ZoneLess & OnPush](#zoneless--onpush)
+    - [Lifecycle hooks](#lifecycle-hooks)
 - [Angular FAQ](#angular-faq)
     - [ng commands](#ng-commands)
     - [Environment & App Initializer](#environment--app-initializer)
@@ -671,6 +672,62 @@ Untested yet
 * `ComponentRef.setInput`
 * Bound host or template listeners callbacks
 * Attaching a view that was marked dirty by one of the above
+
+
+### Lifecycle hooks
+
+[**Source file:** lifecycle.ts](src/ia/lifecycle.ts)
+
+**Briefly**
+
+Lifecycle hooks in Signal-base query.
+
+**Usage**
+```HTML
+<ia-lifecycle-hooks-container></ia-lifecycle-hooks-container>
+```
+
+**Details**
+
+The Signal-based queries resolve earlier is due to their design philosophy of being synchronous
+and immediately available as part of the component's setup.
+
+Component reference from **contentChild()**, **viewChild()** are available in **ngOnInit** hook.
+- Correct for Signal-based queries
+- Incorrect for the traditional decorator-based queries @ViewChild()
+
+**ngOnChanges** still triggered when `input<number>() (signal)` parameter changed the value, probably for some legacy compatibility,
+but it is not recommended use it in Signal-base queries, use effect() or computed()
+
+All hooks:
+
+* `constructor` contentChild: undefined
+* `constructor` viewChild: undefined
+* `ngOnChanges` {param: SimpleChange}
+* `ngOnInit` contentChild: PROJECTED CONTENT AVAILABLE
+* `ngOnInit` viewChild: VIEW COMPONENT AVAILABLE
+* `ngDoCheck`
+* `constructor effect` param: 0
+* `ngAfterContentInit` contentChild: PROJECTED CONTENT AVAILABLE
+* `ngAfterContentInit` viewChild: VIEW COMPONENT AVAILABLE
+* `ngAfterContentChecked`
+* `ngAfterViewInit` contentChild: PROJECTED CONTENT AVAILABLE
+* `ngAfterViewInit` viewChild: VIEW COMPONENT AVAILABLE
+* `ngAfterViewChecked`
+* `afterNextRender` write border before: 1px solid rgb(204, 204, 204)
+* `afterEveryRender` write
+* `afterNextRender` read afterWrite: <div style=​"width:​ 300px;​ height:​ 150px;​ border:​ double red;​">​</div>​
+* `afterEveryRender` read
+* `ngOnDestroy`
+
+Input changes trigger next hooks:
+* `ngOnChanges` {param: SimpleChange}
+* `ngDoCheck`
+* `constructor effect` param: 1
+* `ngAfterContentChecked`
+* `ngAfterViewChecked`
+* `afterEveryRender` write
+* `afterEveryRender` read
 
 ## Angular FAQ
 

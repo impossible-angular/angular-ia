@@ -10,12 +10,13 @@ const DYNAMIC_INPUT = 'dynamic-input'
 const SELF_VS_HOST = 'self-vs-host'
 const DIRECTIVES = 'directives'
 const PIPES = 'pipes'
+const ROUTES = 'routes'
 const RXJS = 'rxjs'
 const FORWARD_REF = 'forward-ref'
 const CVA = 'cva'
 const NGRX_VS_SIGNAL = 'ngrx-vs-signal'
 const ZONELESS = 'zoneless'
-const ROUTES = 'routes'
+const LIFECYCLE = 'lifecycle'
 
 const INIT_APP = resolve('init-files/app.ts')
 const INIT_APP_CONFIG = resolve('init-files/app.config.ts')
@@ -191,6 +192,12 @@ const zoneLessProject = async () => {
     await appImportFrom('\nimport { ZoneLessContainerComponent } from \'@ia/zoneless\'')
 }
 
+const lifecycleProject = async () => {
+    await tsconfigInclude(`\n    "src/**/lifecycle.ts",`)
+    await appTemplate('<ia-lifecycle-hooks-container></ia-lifecycle-hooks-container>')
+    await appImportsArr('LifecycleHooksContainerComponent')
+    await appImportFrom('\nimport { LifecycleHooksContainerComponent } from \'@ia/lifecycle\'')
+}
 
 await resetProject()
 
@@ -231,7 +238,9 @@ switch (projectName) {
     case ZONELESS:
         await zoneLessProject()
         break
-
+    case LIFECYCLE:
+        await lifecycleProject()
+        break
     default:
         console.warn(`
 Syntax: node projects [project-name]
@@ -243,12 +252,13 @@ project-name:
   ${SELF_VS_HOST}
   ${DIRECTIVES}
   ${PIPES}
+  ${ROUTES}
   ${RXJS}
   ${FORWARD_REF}
   ${CVA}
   ${NGRX_VS_SIGNAL}
   ${ZONELESS}
-  ${ROUTES}
+  ${LIFECYCLE}
 `)
 }
 
