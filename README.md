@@ -1,7 +1,7 @@
 # Impossible Angular
 
 - [Quick start](#quick-start)
-- [Impossible Angular - Youtube chanel](#impossible-angular-youtube-chanel)
+- [Impossible Angular - Youtube chanel](#impossible-angular---youtube-chanel)
     - [Dynamic Providers](#dynamic-providers)
     - [Dynamic Injector](#dynamic-injector)
     - [Dynamic @Input](#dynamic-input)
@@ -11,7 +11,6 @@
     - [Pipes](#pipes)
     - [Routes](#routes)
     - [RxJS](#rxjs)
-    - [Circular dependency with forwardRef](#circular-dependency-with-forwardref)
     - [Simplified implementation of ControlValueAccessor (CVA)](#simplified-implementation-of-controlvalueaccessor-cva)
     - [NgRx install](#ngrx)
     - [NgRx vs Signal](#ngrx-vs-signal)
@@ -735,21 +734,18 @@ Both `provideEnvironmentInitializer` and `provideAppInitializer` are functions u
   * Primarily used for loading critical, asynchronous data like `user session details`, necessary `configuration files`, or `feature flags from an API`.
   * It can safely depend on any service that is provided in the **root injector**.
 
-```angular2html
-@Components(...)
-exports components AppComponent {
+```typescript
+export class AppComponent {
     // Don't use dummy injection or comments: "Don't remove this line"
     dummyService = inject(SomeDummyService)
 }
 ```
 Use `provideEnvironmentInitializer` or `provideAppInitializer`
-```ts
+```typescript
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideEnvironmentInitializer(() => {
-        inject(SomeDummyService)
-    }),
-    provideAppInitializer(...)
+    provideEnvironmentInitializer(() => inject(SomeDummyService)),
+    provideAppInitializer(() => inject(SomeDummyService))
   ]
 }
 ```
