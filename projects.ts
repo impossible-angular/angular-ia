@@ -12,7 +12,6 @@ const DIRECTIVES = 'directives'
 const PIPES = 'pipes'
 const ROUTES = 'routes'
 const RXJS = 'rxjs'
-const FORWARD_REF = 'forward-ref'
 const CVA = 'cva'
 const NGRX_VS_SIGNAL = 'ngrx-vs-signal'
 const ZONELESS = 'zoneless'
@@ -159,13 +158,6 @@ const rxjsProject = async () => {
     await appImportFrom('\nimport { RxjsContainerComponent } from \'@ia/rxjs\'')
 }
 
-const forwardRefProject = async () => {
-    await tsconfigInclude(`\n    "src/**/forward-ref.ts",`)
-    await appTemplate('<ia-parent></ia-parent>')
-    await appImportsArr('ParentComponent')
-    await appImportFrom('\nimport { ParentComponent } from \'@ia/forward-ref\'')
-}
-
 const cvaProject = async () => {
     await tsconfigInclude(`\n    "src/**/cva.ts",`)
     await appTemplate('<ia-cva-container></ia-cva-container>')
@@ -235,9 +227,6 @@ switch (projectName) {
     case RXJS:
         await rxjsProject()
         break
-    case FORWARD_REF:
-        await forwardRefProject()
-        break
     case CVA:
         await cvaProject()
         break
@@ -266,7 +255,6 @@ project-name:
   ${PIPES}
   ${ROUTES}
   ${RXJS}
-  ${FORWARD_REF}
   ${CVA}
   ${NGRX_VS_SIGNAL}
   ${ZONELESS}

@@ -399,59 +399,6 @@ In the constructor uncomment the function that you want to run.
 * **tap** - call function sequentially
 
 
-### Circular dependency with forwardRef
-
-[**Source file:** forward-ref.ts](src/ia/forward-ref.ts)
-
-**Briefly**
-
-To resolve circular dependency use `forwardRef`. To get parent's method from child component.
-
-**Usage**
-```HTML
-<ia-parent></ia-parent>`
-```
-
-InjectionToken for parent component `PARENT_COMPONENT`
-
-```TypeScript
-export const PARENT_COMPONENT = new InjectionToken<ParentComponent>('Parent Component Instance')
-```
-
-Child component where we inject and call parent's method `greet()`
-
-```TypeScript
-@Component({})
-export class ChildComponent {
-    private parent = inject<ParentComponent>(PARENT_COMPONENT)
-
-    constructor() {
-        this.parent.greet('ChildComponent')
-    }
-
-}
-```
-
-Parent component where we defined a provider to itself.
-
-```TypeScript
-@Component({
-    template: `<app-child></app-child>`,
-    imports: [ChildComponent],
-    providers: [
-        {
-            provide: PARENT_COMPONENT,
-            useExisting: forwardRef(() => ParentComponent)
-        }
-    ]
-})
-export class ParentComponent {
-    greet(name: string): void {
-        console.log(`Hello, ${name}! I am your Parent component.`)
-    }
-}
-```
-
 ### Simplified implementation of ControlValueAccessor (CVA)
 
 [**Source file:** cva.ts](src/ia/cva.ts)
@@ -733,13 +680,13 @@ Input changes trigger next hooks:
 ### Component interaction
 
 
-* **1. input/output** parameters with one-way or two-way binding
-* **2. Service** with `RxJS Subject or BehaviorSubject or Signal`
-* **3. Dialog interaction**: `ViewContainerRef.createComponent()` send/receive data through instance
-* **4. ngTemplateOutlet**: using `context:{ $implicit }` and send it to `ng-template`   
-* **5. viewChild**: looks for elements within the `child` component's own template
-* **6. Projected content**: using **contentChild** to inject child or **@Host()**: to inject parent component
-* **7. ForwardRef**: `InjectionToken` and `forwardRef` to inject a parent to avoid circular dependency and use abstraction
+* **1. input/output** parameters with one-way or two-way binding.
+* **2. Service** with `RxJS Subject or BehaviorSubject or Signal`.
+* **3. Dialog interaction**: `ViewContainerRef.createComponent()` send/receive data through instance.
+* **4. ngTemplateOutlet**: using `context:{ $implicit }` and send it to `ng-template`.
+* **5. viewChild**: looks for child component within own template.
+* **6. Projected content**: using **contentChild** to inject child or **@Host()**: to inject parent component.
+* **7. ForwardRef**: using `InjectionToken` and `forwardRef` to resolve circular dependency. To get parent component from child component with abstraction. 
 
 
 ## Angular FAQ
