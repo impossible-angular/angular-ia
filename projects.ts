@@ -17,6 +17,7 @@ const CVA = 'cva'
 const NGRX_VS_SIGNAL = 'ngrx-vs-signal'
 const ZONELESS = 'zoneless'
 const LIFECYCLE = 'lifecycle'
+const INTERACTION = 'interaction'
 
 const INIT_APP = resolve('init-files/app.ts')
 const INIT_APP_CONFIG = resolve('init-files/app.config.ts')
@@ -199,6 +200,14 @@ const lifecycleProject = async () => {
     await appImportFrom('\nimport { LifecycleHooksContainerComponent } from \'@ia/lifecycle\'')
 }
 
+const interactionProject = async () => {
+    await tsconfigInclude(`\n    "src/**/component-interaction.ts",`)
+    await appTemplate('<ia-interaction-container></ia-interaction-container>')
+    await appImportsArr('InteractionContainerComponent')
+    await appImportFrom('\nimport { InteractionContainerComponent } from \'@ia/component-interaction\'')
+}
+
+
 await resetProject()
 
 switch (projectName) {
@@ -241,6 +250,9 @@ switch (projectName) {
     case LIFECYCLE:
         await lifecycleProject()
         break
+    case INTERACTION:
+        await interactionProject()
+        break
     default:
         console.warn(`
 Syntax: node projects [project-name]
@@ -259,6 +271,7 @@ project-name:
   ${NGRX_VS_SIGNAL}
   ${ZONELESS}
   ${LIFECYCLE}
+  ${INTERACTION}
 `)
 }
 

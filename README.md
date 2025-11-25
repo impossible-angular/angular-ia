@@ -17,6 +17,7 @@
     - [NgRx vs Signal](#ngrx-vs-signal)
     - [ZoneLess & OnPush](#zoneless--onpush)
     - [Lifecycle hooks](#lifecycle-hooks)
+    - [Component interaction](#component-interaction)
 - [Angular FAQ](#angular-faq)
     - [ng commands](#ng-commands)
     - [Environment & App Initializer](#environment--app-initializer)
@@ -693,13 +694,12 @@ The Signal-based queries resolve earlier is due to their design philosophy of be
 and immediately available as part of the component's setup.
 
 Component reference from **contentChild()**, **viewChild()** are available in **ngOnInit** hook.
-- Correct for Signal-based queries
-- Incorrect for the traditional decorator-based queries @ViewChild()
+For the traditional decorator-based queries **@ViewChild()** it works as expected.
 
 **ngOnChanges** still triggered when `input<number>() (signal)` parameter changed the value, probably for some legacy compatibility,
-but it is not recommended use it in Signal-base queries, use effect() or computed()
+but it is not recommended use it in `Signal-base queries`, use `effect()` or `computed()`
 
-All hooks:
+All hooks with two component references:
 
 * `constructor` contentChild: undefined
 * `constructor` viewChild: undefined
@@ -729,7 +729,21 @@ Input changes trigger next hooks:
 * `afterEveryRender` write
 * `afterEveryRender` read
 
+
+### Component interaction
+
+
+* **1. input/output** parameters with one-way or two-way binding
+* **2. Service** with `RxJS Subject or BehaviorSubject or Signal`
+* **3. Dialog interaction**: `ViewContainerRef.createComponent()` send/receive data through instance
+* **4. ngTemplateOutlet**: using `context:{ $implicit }` and send it to `ng-template`   
+* **5. viewChild**: looks for elements within the `child` component's own template
+* **6. Projected content**: using **contentChild** to inject child or **@Host()**: to inject parent component
+* **7. ForwardRef**: `InjectionToken` and `forwardRef` to inject a parent to avoid circular dependency and use abstraction
+
+
 ## Angular FAQ
+
 
 ### ng commands
 
