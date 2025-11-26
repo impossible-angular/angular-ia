@@ -7,16 +7,19 @@ const projectName = process.argv[2]
 const DYNAMIC_PROVIDERS = 'dynamic-providers'
 const DYNAMIC_INJECTOR = 'dynamic-injector'
 const DYNAMIC_INPUT = 'dynamic-input'
+
+const COMPONENT_INTERACTION = 'component-interaction'
+const LIFECYCLE = 'lifecycle'
+const DI = 'di'
 const DIRECTIVES = 'directives'
 const PIPES = 'pipes'
 const ROUTES = 'routes'
+const ZONELESS = 'zoneless'
+
 const RXJS = 'rxjs'
 const CVA = 'cva'
 const NGRX_VS_SIGNAL = 'ngrx-vs-signal'
-const ZONELESS = 'zoneless'
-const LIFECYCLE = 'lifecycle'
-const INTERACTION = 'interaction'
-const DI = 'di'
+
 
 const INIT_APP = resolve('init-files/app.ts')
 const INIT_APP_CONFIG = resolve('init-files/app.config.ts')
@@ -119,6 +122,28 @@ const dynInputProject = async () => {
     await appImportFrom('\nimport { DynInputComponent } from \'@ia/dynamic-input\'')
 }
 
+
+const componentInteractionProject = async () => {
+    await tsconfigInclude(`\n    "src/**/component-interaction.ts",`)
+    await appTemplate('<ia-interaction-container></ia-interaction-container>')
+    await appImportsArr('InteractionContainerComponent')
+    await appImportFrom('\nimport { InteractionContainerComponent } from \'@ia/component-interaction\'')
+}
+
+const lifecycleProject = async () => {
+    await tsconfigInclude(`\n    "src/**/lifecycle.ts",`)
+    await appTemplate('<ia-lifecycle-hooks-container></ia-lifecycle-hooks-container>')
+    await appImportsArr('LifecycleHooksContainerComponent')
+    await appImportFrom('\nimport { LifecycleHooksContainerComponent } from \'@ia/lifecycle\'')
+}
+
+const diProject = async () => {
+    await tsconfigInclude(`\n    "src/**/di.ts",`)
+    await appTemplate('<ia-di-container></ia-di-container>')
+    await appImportsArr('DiContainerComponent')
+    await appImportFrom('\nimport { DiContainerComponent } from \'@ia/di\'')
+}
+
 const directivesProject = async () => {
     await tsconfigInclude(`\n    "src/**/directives.ts",`)
     await appTemplate('<ia-directives-container></ia-directives-container>')
@@ -143,6 +168,14 @@ const routesProject = async () => {
     await appConfigImportFrom('\nimport { routes } from \'@ia/routes\'')
     await appConfigImportFrom('\nimport { provideRouter } from \'@angular/router\'')
 }
+
+const zoneLessProject = async () => {
+    await tsconfigInclude(`\n    "src/**/zoneless.ts",`)
+    await appTemplate('<ia-zoneless-container></ia-zoneless-container>')
+    await appImportsArr('ZoneLessContainerComponent')
+    await appImportFrom('\nimport { ZoneLessContainerComponent } from \'@ia/zoneless\'')
+}
+
 
 const rxjsProject = async () => {
     await tsconfigInclude(`\n    "src/**/rxjs.ts",`)
@@ -171,35 +204,9 @@ const ngrxSignalProject = async () => {
     await appConfigImportFrom('\nimport { provideStore } from \'@ngrx/store\'')
 }
 
-const zoneLessProject = async () => {
-    await tsconfigInclude(`\n    "src/**/zoneless.ts",`)
-    await appTemplate('<ia-zoneless-container></ia-zoneless-container>')
-    await appImportsArr('ZoneLessContainerComponent')
-    await appImportFrom('\nimport { ZoneLessContainerComponent } from \'@ia/zoneless\'')
-}
-
-const lifecycleProject = async () => {
-    await tsconfigInclude(`\n    "src/**/lifecycle.ts",`)
-    await appTemplate('<ia-lifecycle-hooks-container></ia-lifecycle-hooks-container>')
-    await appImportsArr('LifecycleHooksContainerComponent')
-    await appImportFrom('\nimport { LifecycleHooksContainerComponent } from \'@ia/lifecycle\'')
-}
-
-const interactionProject = async () => {
-    await tsconfigInclude(`\n    "src/**/component-interaction.ts",`)
-    await appTemplate('<ia-interaction-container></ia-interaction-container>')
-    await appImportsArr('InteractionContainerComponent')
-    await appImportFrom('\nimport { InteractionContainerComponent } from \'@ia/component-interaction\'')
-}
-
-const diProject = async () => {
-    await tsconfigInclude(`\n    "src/**/di.ts",`)
-    await appTemplate('<ia-di-container></ia-di-container>')
-    await appImportsArr('DiContainerComponent')
-    await appImportFrom('\nimport { DiContainerComponent } from \'@ia/di\'')
-}
 
 await resetProject()
+
 
 switch (projectName) {
     case DYNAMIC_PROVIDERS:
@@ -211,6 +218,15 @@ switch (projectName) {
     case DYNAMIC_INPUT:
         await dynInputProject()
         break
+    case COMPONENT_INTERACTION:
+        await componentInteractionProject()
+        break
+    case LIFECYCLE:
+        await lifecycleProject()
+        break
+    case DI:
+        await diProject()
+        break
     case DIRECTIVES:
         await directivesProject()
         break
@@ -219,6 +235,9 @@ switch (projectName) {
         break
     case ROUTES:
         await routesProject()
+        break
+    case ZONELESS:
+        await zoneLessProject()
         break
     case RXJS:
         await rxjsProject()
@@ -229,18 +248,6 @@ switch (projectName) {
     case NGRX_VS_SIGNAL:
         await ngrxSignalProject()
         break
-    case ZONELESS:
-        await zoneLessProject()
-        break
-    case LIFECYCLE:
-        await lifecycleProject()
-        break
-    case INTERACTION:
-        await interactionProject()
-        break
-    case DI:
-        await diProject()
-        break
     default:
         console.warn(`
 Syntax: node projects [project-name]
@@ -249,16 +256,16 @@ project-name:
   ${DYNAMIC_PROVIDERS}
   ${DYNAMIC_INJECTOR}
   ${DYNAMIC_INPUT}
+  ${COMPONENT_INTERACTION}
+  ${LIFECYCLE}
+  ${DI}
   ${DIRECTIVES}
   ${PIPES}
   ${ROUTES}
+  ${ZONELESS}
   ${RXJS}
   ${CVA}
   ${NGRX_VS_SIGNAL}
-  ${ZONELESS}
-  ${LIFECYCLE}
-  ${INTERACTION}
-  ${DI}
 `)
 }
 

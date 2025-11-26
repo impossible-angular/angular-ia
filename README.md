@@ -6,36 +6,41 @@
     - [Dynamic Injector](#dynamic-injector)
     - [Dynamic @Input](#dynamic-input)
 - [Angular examples](#angular-examples)
+    - [Component interaction](#component-interaction)
+    - [Lifecycle hooks](#lifecycle-hooks)
+    - [Dependency injection](#dependency-injection)
     - [Directives](#directives)
     - [Pipes](#pipes)
     - [Routes](#routes)
-    - [RxJS](#rxjs)
-    - [Simplified implementation of ControlValueAccessor (CVA)](#simplified-implementation-of-controlvalueaccessor-cva)
-    - [NgRx install](#ngrx)
-    - [NgRx vs Signal](#ngrx-vs-signal)
     - [ZoneLess & OnPush](#zoneless--onpush)
-    - [Lifecycle hooks](#lifecycle-hooks)
-    - [Component interaction](#component-interaction)
-    - [Dependency injection](#dependency-injection)
+- [Different Angular](#different-angular)
+    - [RxJS](#rxjs)
+    - [ControlValueAccessor (CVA) - simplified implementation](#controlvalueaccessor-cva---simplified-implementation)
+    - [NgRx vs Signal](#ngrx-vs-signal)
 - [Angular FAQ](#angular-faq)
     - [ng commands](#ng-commands)
     - [Environment & App Initializer](#environment--app-initializer)
 
+
 ### Quick start
 
-All projects can be executed using the `npm run [project name]` script in package.json.
 
-Example: for `Dynamic Providers`
+All build and run scripts are defined in `package.json` (`npm run [project name]`).
+
+Example for `Dynamic Providers`
 ```shell
 npm install
 npm run dynamic-providers
 ```
 
+
 ## Impossible Angular - Youtube chanel
+
 
 ### Dynamic Providers
 
-[**Source file:** dynamic-providers.ts](src/ia/dynamic-providers.ts)
+
+[**Source file:** dynamic-providers.ts](src/ia/dynamic-providers.ts) `npm run dynamic-providers`
 
 **Briefly**
 
@@ -83,7 +88,8 @@ export class WidgetContainerComponent {
 
 ### Dynamic Injector
 
-[**Source file:** dynamic-injector.ts](src/ia/dynamic-injector.ts)
+
+[**Source file:** dynamic-injector.ts](src/ia/dynamic-injector.ts) `npm run dynamic-injector`
 
 **Briefly**
 
@@ -145,7 +151,8 @@ export class AddMessageComponent {
 
 ### Dynamic @Input
 
-[**Source file:** dynamic-input.ts](src/ia/dynamic-input.ts)
+
+[**Source file:** dynamic-input.ts](src/ia/dynamic-input.ts)  `npm run dynamic-input`
 
 **Briefly**
 
@@ -219,10 +226,111 @@ export class DynInputComponent {
 ## Angular examples
 
 
+### Component interaction
+
+
+[**Source file:** component-interaction.ts](src/ia/component-interaction.ts)  `npm run component-interaction`
+
+**Briefly**
+
+7 methods of component interaction
+
+**Usage**
+```HTML
+<ia-interaction-container></ia-interaction-container>
+```
+
+* **1. input/output interaction**: using parameters with one-way or two-way binding (`[name]: input, [name]Change: output`).
+* **2. Service interaction** with `Signals`.
+* **3. Dialog interaction**: `ViewContainerRef.createComponent()` send/receive data through instance.
+* **4. Template interaction**: using `*ngTemplateOutlet context:{ $implicit }` and send it to `ng-template`.
+* **5. viewChild()**: looks for child component within own template.
+* **6. Projected content**: using **contentChild()** to inject child or **@Host()**: to inject parent component.
+* **7. ForwardRef**: using `InjectionToken` and `forwardRef` to resolve circular dependency. To get parent component from child component with abstraction.
+
+
+### Lifecycle hooks
+
+
+[**Source file:** lifecycle.ts](src/ia/lifecycle.ts) `npm run lifecycle`
+
+**Briefly**
+
+Lifecycle hooks in Signal-base query.
+
+**Usage**
+```HTML
+<ia-lifecycle-hooks-container></ia-lifecycle-hooks-container>
+```
+
+**Details**
+
+The Signal-based queries resolve earlier is due to their design philosophy of being synchronous
+and immediately available as part of the component's setup.
+
+Component reference from **contentChild()**, **viewChild()** are available in **ngOnInit** hook.
+For the traditional decorator-based queries **@ViewChild()** it works as expected.
+
+**ngOnChanges** still triggered when `input<number>() (signal)` parameter changed the value, probably for some legacy compatibility,
+but it is not recommended use it in `Signal-base queries`, use `effect()` or `computed()`
+
+All hooks with two component references:
+
+* `constructor` contentChild: undefined
+* `constructor` viewChild: undefined
+* `ngOnChanges` {param: SimpleChange}
+* `ngOnInit` contentChild: PROJECTED CONTENT AVAILABLE
+* `ngOnInit` viewChild: VIEW COMPONENT AVAILABLE
+* `ngDoCheck`
+* `constructor effect` param: 0
+* `ngAfterContentInit` contentChild: PROJECTED CONTENT AVAILABLE
+* `ngAfterContentInit` viewChild: VIEW COMPONENT AVAILABLE
+* `ngAfterContentChecked`
+* `ngAfterViewInit` contentChild: PROJECTED CONTENT AVAILABLE
+* `ngAfterViewInit` viewChild: VIEW COMPONENT AVAILABLE
+* `ngAfterViewChecked`
+* `afterNextRender` write border before: 1px solid rgb(204, 204, 204)
+* `afterEveryRender` write
+* `afterNextRender` read afterWrite: <div style=​"width:​ 300px;​ height:​ 150px;​ border:​ double red;​">​</div>​
+* `afterEveryRender` read
+* `ngOnDestroy`
+
+Input changes trigger next hooks:
+* `ngOnChanges` {param: SimpleChange}
+* `ngDoCheck`
+* `constructor effect` param: 1
+* `ngAfterContentChecked`
+* `ngAfterViewChecked`
+* `afterEveryRender` write
+* `afterEveryRender` read
+
+
+### Dependency injection
+
+
+[**Source file:** di.ts](src/ia/di.ts) `npm run di`
+
+**Briefly**
+
+The inject() method's options.
+
+**Usage**
+```HTML
+<ia-di-container></ia-di-container>
+```
+
+* **Standard** injection searches the entire hierarchy from current component up to the root.
+* **skipSelf** - skip service that provided locally and start search from parent component up to the root.
+* **self** - limits the search to the current element's injector.
+* **host** - limits the search to the current element's injector and its direct PROJECTED parent with ng-content NOT regular parent.
+
+Don't forget about `dependency inversion principle` and use `abstractions`
+
+
 ### Directives
 
 
-[**Source file:** directives.ts](src/ia/directives.ts)
+[**Source file:** directives.ts](src/ia/directives.ts) `npm run directives`
 
 **Briefly**
 
@@ -240,7 +348,8 @@ Examples of attribute and structural directives.
 
 ### Pipes
 
-[**Source file:** pipes.ts](src/ia/pipes.ts)
+
+[**Source file:** pipes.ts](src/ia/pipes.ts) `npm run pipes`
 
 **Briefly**
 
@@ -284,7 +393,8 @@ export class AsyncComponent {
 
 ### Routes
 
-[**Source file:** routes.ts](src/ia/routes.ts)
+
+[**Source file:** routes.ts](src/ia/routes.ts) `npm run routes`
 
 **Briefly**
 
@@ -313,9 +423,88 @@ Angular Router Data Flow:
 * ActivatedRoute service (snapshots/observables).
 
 
+### ZoneLess & OnPush
+
+
+[**Source file:** zoneless.ts](src/ia/zoneless.ts) `npm run zoneless`
+
+**Briefly**
+
+Behaviours in `Zoneless` application with `Default` and `OnPush` change detection strategy.
+
+**Usage**
+
+```HTML
+<ia-zoneless-container></ia-zoneless-container>
+```
+
+**Details**
+
+Behaviors of Change Detection with `ChangeDetectorRef` (`markForCheck`, `detectChanges`)
+
+* `async` Pipe calls `ChangeDetectorRef.markForCheck` automatically.
+
+```code
+[level-1](Default):                 -> update
+[level-2](Default): markForCheck()  -> update
+[level-3](Default):                 -> update
+```
+
+```code
+[level-1](Default):                 -> NOT update
+[level-2](Default): detectChanges() -> update
+[level-3](Default):                 -> update
+```
+
+```code
+[level-1](OnPush):                 -> update
+[level-2](OnPush): markForCheck()  -> update
+[level-3](OnPush):                 -> NOT update
+```
+
+```code
+[level-1](OnPush):                  -> NOT update
+[level-2](OnPush): detectChanges()  -> update
+[level-3](OnPush):                  -> NOT update
+```
+
+The **Asymmetric Change Detection** error occurs when a parent component using the `Default` strategy
+updates a simple bound value in its template during the same change detection cycle in which a child component
+updates a `Signal` that is `read within the template`.
+
+```code
+[level-1](Default):                 -> ExpressionChangedAfterItHasBeenChecked
+[level-2](Default): signal.set()    -> update
+[level-3](Default):                 -> update
+```
+
+```code
+[level-1](OnPush):                 -> NOT update
+[level-2](OnPush): signal.set()    -> update
+[level-3](OnPush):                 -> NOT update
+```
+
+**It's recommended to move the application to a `zoneless` and `OnPush` strategy with reactive values (`Signals` or `Observables`).**
+
+Calls change detection automatically:
+
+* `async` Pipe calls `ChangeDetectorRef.markForCheck`
+* Updating a `signal` that's `read in a template`
+
+Untested yet
+
+* `ComponentRef.setInput`
+* Bound host or template listeners callbacks
+* Attaching a view that was marked dirty by one of the above
+
+
+## Different Angular
+
+
 ### RxJS
 
-[**Source file:** rxjs.ts](src/ia/rxjs.ts)
+
+[**Source file:** rxjs.ts](src/ia/rxjs.ts) `npm run rxjs`
 
 **Briefly**
 
@@ -347,9 +536,10 @@ In the constructor uncomment the function that you want to run.
 * **tap** - call function sequentially
 
 
-### Simplified implementation of ControlValueAccessor (CVA)
+### ControlValueAccessor (CVA) - simplified implementation
 
-[**Source file:** cva.ts](src/ia/cva.ts)
+
+[**Source file:** cva.ts](src/ia/cva.ts)  `npm run cva`
 
 **Briefly**
 
@@ -465,21 +655,10 @@ export class CvaContainerComponent {
 ```
 
 
-### NgRx
-
-Install NgRx store
-```shell
-ng add @ngrx/store@latest
-```
-
-Install NgRx store devtools in project. In Chrome add extension `Redux DevTools`
-```shell
-ng add @ngrx/store-devtools@latest
-```
-
 ### NgRx vs Signal
 
-[**Source file:** ngrx-vs-signal.ts](src/ia/ngrx-vs-signal.ts)
+
+[**Source file:** ngrx-vs-signal.ts](src/ia/ngrx-vs-signal.ts)  `npm run ngrx-vs-signal`
 
 **Briefly**
 
@@ -496,177 +675,15 @@ For your consideration, here are two ways for implementing state management.
 
 For the Signals implementation, the `freezeArgs` decorator is used; it freezes the object in the same way that NgRx does.
 
-### ZoneLess & OnPush
-
-[**Source file:** zoneless.ts](src/ia/zoneless.ts)
-
-**Briefly**
-
-Behaviours in `Zoneless` application with `Default` and `OnPush` change detection strategy.
-
-**Usage**
-
-```HTML
-<ia-zoneless-container></ia-zoneless-container>
+Install NgRx store
+```shell
+ng add @ngrx/store@latest
 ```
 
-**Details**
-
-Behaviors of Change Detection with `ChangeDetectorRef` (`markForCheck`, `detectChanges`)
-
-* `async` Pipe calls `ChangeDetectorRef.markForCheck` automatically.
-
-```code
-[level-1](Default):                 -> update
-[level-2](Default): markForCheck()  -> update
-[level-3](Default):                 -> update
+Install NgRx store devtools in project. In Chrome add extension `Redux DevTools`
+```shell
+ng add @ngrx/store-devtools@latest
 ```
-
-```code
-[level-1](Default):                 -> NOT update
-[level-2](Default): detectChanges() -> update
-[level-3](Default):                 -> update
-```
-
-```code
-[level-1](OnPush):                 -> update
-[level-2](OnPush): markForCheck()  -> update
-[level-3](OnPush):                 -> NOT update
-```
-
-```code
-[level-1](OnPush):                  -> NOT update
-[level-2](OnPush): detectChanges()  -> update
-[level-3](OnPush):                  -> NOT update
-```
-
-The **Asymmetric Change Detection** error occurs when a parent component using the `Default` strategy
-updates a simple bound value in its template during the same change detection cycle in which a child component
-updates a `Signal` that is `read within the template`.
-
-```code
-[level-1](Default):                 -> ExpressionChangedAfterItHasBeenChecked
-[level-2](Default): signal.set()    -> update
-[level-3](Default):                 -> update
-```
-
-```code
-[level-1](OnPush):                 -> NOT update
-[level-2](OnPush): signal.set()    -> update
-[level-3](OnPush):                 -> NOT update
-```
-
-**It's recommended to move the application to a `zoneless` and `OnPush` strategy with reactive values (`Signals` or `Observables`).**
-
-Calls change detection automatically:
-
-* `async` Pipe calls `ChangeDetectorRef.markForCheck`
-* Updating a `signal` that's `read in a template`
-
-Untested yet
-
-* `ComponentRef.setInput`
-* Bound host or template listeners callbacks
-* Attaching a view that was marked dirty by one of the above
-
-
-### Lifecycle hooks
-
-[**Source file:** lifecycle.ts](src/ia/lifecycle.ts)
-
-**Briefly**
-
-Lifecycle hooks in Signal-base query.
-
-**Usage**
-```HTML
-<ia-lifecycle-hooks-container></ia-lifecycle-hooks-container>
-```
-
-**Details**
-
-The Signal-based queries resolve earlier is due to their design philosophy of being synchronous
-and immediately available as part of the component's setup.
-
-Component reference from **contentChild()**, **viewChild()** are available in **ngOnInit** hook.
-For the traditional decorator-based queries **@ViewChild()** it works as expected.
-
-**ngOnChanges** still triggered when `input<number>() (signal)` parameter changed the value, probably for some legacy compatibility,
-but it is not recommended use it in `Signal-base queries`, use `effect()` or `computed()`
-
-All hooks with two component references:
-
-* `constructor` contentChild: undefined
-* `constructor` viewChild: undefined
-* `ngOnChanges` {param: SimpleChange}
-* `ngOnInit` contentChild: PROJECTED CONTENT AVAILABLE
-* `ngOnInit` viewChild: VIEW COMPONENT AVAILABLE
-* `ngDoCheck`
-* `constructor effect` param: 0
-* `ngAfterContentInit` contentChild: PROJECTED CONTENT AVAILABLE
-* `ngAfterContentInit` viewChild: VIEW COMPONENT AVAILABLE
-* `ngAfterContentChecked`
-* `ngAfterViewInit` contentChild: PROJECTED CONTENT AVAILABLE
-* `ngAfterViewInit` viewChild: VIEW COMPONENT AVAILABLE
-* `ngAfterViewChecked`
-* `afterNextRender` write border before: 1px solid rgb(204, 204, 204)
-* `afterEveryRender` write
-* `afterNextRender` read afterWrite: <div style=​"width:​ 300px;​ height:​ 150px;​ border:​ double red;​">​</div>​
-* `afterEveryRender` read
-* `ngOnDestroy`
-
-Input changes trigger next hooks:
-* `ngOnChanges` {param: SimpleChange}
-* `ngDoCheck`
-* `constructor effect` param: 1
-* `ngAfterContentChecked`
-* `ngAfterViewChecked`
-* `afterEveryRender` write
-* `afterEveryRender` read
-
-
-### Component interaction
-
-
-[**Source file:** component-interaction.ts](src/ia/component-interaction.ts)
-
-**Briefly**
-
-7 methods of component interaction
-
-**Usage**
-```HTML
-<ia-interaction-container></ia-interaction-container>
-```
-
-* **1. input/output interaction**: using parameters with one-way or two-way binding (`[name]: input, [name]Change: output`).
-* **2. Service interaction** with `Signals`.
-* **3. Dialog interaction**: `ViewContainerRef.createComponent()` send/receive data through instance.
-* **4. Template interaction**: using `*ngTemplateOutlet context:{ $implicit }` and send it to `ng-template`.
-* **5. viewChild()**: looks for child component within own template.
-* **6. Projected content**: using **contentChild()** to inject child or **@Host()**: to inject parent component.
-* **7. ForwardRef**: using `InjectionToken` and `forwardRef` to resolve circular dependency. To get parent component from child component with abstraction. 
-
-
-### Dependency injection
-
-[**Source file:** di.ts](src/ia/di.ts)
-
-**Briefly**
-
-The inject() method's options.
-
-**Usage**
-```HTML
-<ia-di-container></ia-di-container>
-```
-
-* **Standard** injection searches the entire hierarchy from current component up to the root.
-* **skipSelf** - skip service that provided locally and start search from parent component up to the root.
-* **self** - limits the search to the current element's injector.
-* **host** - limits the search to the current element's injector and its direct PROJECTED parent with ng-content NOT regular parent.
-
-Don't forget about `dependency inversion principle` and use `abstractions`
 
 
 ## Angular FAQ
