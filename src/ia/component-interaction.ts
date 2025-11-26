@@ -24,7 +24,17 @@ import { NgTemplateOutlet } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 
 
-// **input/output** parameters with two-way binding [name]: input, [name]Change: output
+/**
+ * Impossible Angular v21.x.x
+ * 7 methods of component interaction
+ * Author: Sergii Lutchyn
+ *
+ * Usage:
+ * <ia-interaction-container></ia-interaction-container>
+ */
+
+
+// 1. input/output interaction: using parameters with two-way binding [name]: input, [name]Change: output.
 
 
 @Component({
@@ -73,7 +83,7 @@ export class IOParentComponent {
 }
 
 
-// service interaction
+// 2. Service interaction with `Signals`.
 
 
 @Injectable()
@@ -113,7 +123,7 @@ export class ServiceInteractionComponent {
 }
 
 
-// dialog interaction
+// 3. Dialog interaction: `ViewContainerRef.createComponent()` send/receive data through instance.
 
 
 // abstraction for createComponent
@@ -236,7 +246,7 @@ export class DialogInteractionComponent {
 }
 
 
-// template interaction
+// 4. Template interaction: using `*ngTemplateOutlet context:{ $implicit }` and send it to `ng-template`.
 
 
 @Component({
@@ -258,10 +268,8 @@ export class TemplateInteractionComponent {
 }
 
 
-// Template Reference Variables
+// 5. viewChild(): looks for child component within own template.
 
-
-// viewChild reference
 
 @Component({
     selector: 'ia-view-child',
@@ -289,7 +297,7 @@ export class ViewParentComponent implements OnInit {
 }
 
 
-// projected content: using contentChild() to inject child or @Host(): to inject parent component
+// 6. Projected content: using **contentChild()** to inject child or **@Host()**: to inject parent component.
 
 // 🔑 Use @Host to ensure we ONLY look for ProjectedParentComponent
 @Component({
@@ -323,10 +331,11 @@ export class ProjectedParentComponent implements OnInit {
 }
 
 
-// forwardRef reference
+// 7. ForwardRef: using `InjectionToken` and `forwardRef` to resolve circular dependency. To get parent component from child component with abstraction.
+
+
 // Use an InjectionToken and forwardRef to allow a child component to inject an abstraction
 // (like an interface) of its parent component, thus avoiding tight coupling.
-
 export const PARENT_TOKEN = new InjectionToken('PARENT_TOKEN')
 
 export interface IParent {

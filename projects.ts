@@ -17,6 +17,7 @@ const NGRX_VS_SIGNAL = 'ngrx-vs-signal'
 const ZONELESS = 'zoneless'
 const LIFECYCLE = 'lifecycle'
 const INTERACTION = 'interaction'
+const DI = 'di'
 
 const INIT_APP = resolve('init-files/app.ts')
 const INIT_APP_CONFIG = resolve('init-files/app.config.ts')
@@ -199,6 +200,12 @@ const interactionProject = async () => {
     await appImportFrom('\nimport { InteractionContainerComponent } from \'@ia/component-interaction\'')
 }
 
+const diProject = async () => {
+    await tsconfigInclude(`\n    "src/**/di.ts",`)
+    await appTemplate('<ia-di-container></ia-di-container>')
+    await appImportsArr('DiContainerComponent')
+    await appImportFrom('\nimport { DiContainerComponent } from \'@ia/di\'')
+}
 
 await resetProject()
 
@@ -242,6 +249,9 @@ switch (projectName) {
     case INTERACTION:
         await interactionProject()
         break
+    case DI:
+        await diProject()
+        break
     default:
         console.warn(`
 Syntax: node projects [project-name]
@@ -260,6 +270,7 @@ project-name:
   ${ZONELESS}
   ${LIFECYCLE}
   ${INTERACTION}
+  ${DI}
 `)
 }
 

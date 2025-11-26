@@ -17,6 +17,7 @@
     - [ZoneLess & OnPush](#zoneless--onpush)
     - [Lifecycle hooks](#lifecycle-hooks)
     - [Component interaction](#component-interaction)
+    - [Dependency injection](#dependency-injection)
 - [Angular FAQ](#angular-faq)
     - [ng commands](#ng-commands)
     - [Environment & App Initializer](#environment--app-initializer)
@@ -679,13 +680,45 @@ Input changes trigger next hooks:
 ### Component interaction
 
 
-* **1. input/output** parameters with one-way or two-way binding.
-* **2. Service** with `RxJS Subject or BehaviorSubject or Signal`.
+[**Source file:** component-interaction.ts](src/ia/component-interaction.ts)
+
+**Briefly**
+
+7 methods of component interaction
+
+**Usage**
+```HTML
+<ia-interaction-container></ia-interaction-container>
+```
+
+* **1. input/output interaction**: using parameters with one-way or two-way binding (`[name]: input, [name]Change: output`).
+* **2. Service interaction** with `Signals`.
 * **3. Dialog interaction**: `ViewContainerRef.createComponent()` send/receive data through instance.
-* **4. ngTemplateOutlet**: using `context:{ $implicit }` and send it to `ng-template`.
-* **5. viewChild**: looks for child component within own template.
-* **6. Projected content**: using **contentChild** to inject child or **@Host()**: to inject parent component.
+* **4. Template interaction**: using `*ngTemplateOutlet context:{ $implicit }` and send it to `ng-template`.
+* **5. viewChild()**: looks for child component within own template.
+* **6. Projected content**: using **contentChild()** to inject child or **@Host()**: to inject parent component.
 * **7. ForwardRef**: using `InjectionToken` and `forwardRef` to resolve circular dependency. To get parent component from child component with abstraction. 
+
+
+### Dependency injection
+
+[**Source file:** di.ts](src/ia/di.ts)
+
+**Briefly**
+
+The inject() method's options.
+
+**Usage**
+```HTML
+<ia-di-container></ia-di-container>
+```
+
+* **Standard** injection searches the entire hierarchy from current component up to the root.
+* **skipSelf** - skip service that provided locally and start search from parent component up to the root.
+* **self** - limits the search to the current element's injector.
+* **host** - limits the search to the current element's injector and its direct PROJECTED parent with ng-content NOT regular parent.
+
+Don't forget about `dependency inversion principle` and use `abstractions`
 
 
 ## Angular FAQ

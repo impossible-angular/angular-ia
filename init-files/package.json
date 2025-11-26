@@ -11,12 +11,12 @@
     "pipes": "node projects.ts pipes & ng serve",
     "routes": "node projects.ts routes & ng serve",
     "rxjs": "node projects.ts rxjs & ng serve",
-    "forward-ref": "node projects.ts forward-ref & ng serve",
     "cva": "node projects.ts cva & ng serve",
     "ngrx-vs-signal": "node projects.ts ngrx-vs-signal & ng serve",
     "zoneless": "node projects.ts zoneless & ng serve",
     "lifecycle": "node projects.ts lifecycle & ng serve",
-    "interaction": "node projects.ts interaction & ng serve"
+    "interaction": "node projects.ts interaction & ng serve",
+    "di": "node projects.ts di & ng serve"
   },
   "prettier": {
     "printWidth": 100,
