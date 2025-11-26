@@ -7,7 +7,6 @@ const projectName = process.argv[2]
 const DYNAMIC_PROVIDERS = 'dynamic-providers'
 const DYNAMIC_INJECTOR = 'dynamic-injector'
 const DYNAMIC_INPUT = 'dynamic-input'
-const SELF_VS_HOST = 'self-vs-host'
 const DIRECTIVES = 'directives'
 const PIPES = 'pipes'
 const ROUTES = 'routes'
@@ -120,13 +119,6 @@ const dynInputProject = async () => {
     await appImportFrom('\nimport { DynInputComponent } from \'@ia/dynamic-input\'')
 }
 
-const selfHostProject = async () => {
-    await tsconfigInclude(`\n    "src/**/self-vs-host.ts",`)
-    await appTemplate('<ia-self-host-container></ia-self-host-container>')
-    await appImportsArr('SelfHostContainerComponent')
-    await appImportFrom('\nimport { SelfHostContainerComponent } from \'@ia/self-vs-host\'')
-}
-
 const directivesProject = async () => {
     await tsconfigInclude(`\n    "src/**/directives.ts",`)
     await appTemplate('<ia-directives-container></ia-directives-container>')
@@ -219,9 +211,6 @@ switch (projectName) {
     case DYNAMIC_INPUT:
         await dynInputProject()
         break
-    case SELF_VS_HOST:
-        await selfHostProject()
-        break
     case DIRECTIVES:
         await directivesProject()
         break
@@ -260,7 +249,6 @@ project-name:
   ${DYNAMIC_PROVIDERS}
   ${DYNAMIC_INJECTOR}
   ${DYNAMIC_INPUT}
-  ${SELF_VS_HOST}
   ${DIRECTIVES}
   ${PIPES}
   ${ROUTES}

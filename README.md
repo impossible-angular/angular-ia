@@ -5,7 +5,6 @@
     - [Dynamic Providers](#dynamic-providers)
     - [Dynamic Injector](#dynamic-injector)
     - [Dynamic @Input](#dynamic-input)
-    - [@Self vs @Host](#self-vs-host)
 - [Angular examples](#angular-examples)
     - [Directives](#directives)
     - [Pipes](#pipes)
@@ -217,62 +216,11 @@ export class DynInputComponent {
 ```
 
 
-### @Self vs @Host
-
-[**Source file:** self-vs-host.ts](src/ia/self-vs-host.ts)
-
-**Briefly**
-
-One crucial difference between `self` and `host` parameters for service injection, it is projection.
-
-**Usage**
-```HTML
-<ia-self-host-container></ia-self-host-container>
-```
-
-**Details**
-
-`TestService` that generates an ID for each instance and `aiTestService` directive for dynamic provider.
-
-```ts
-@Injectable()
-export class TestService {}
-
-@Directive({
-  selector: '[appTestService]',
-  providers: [TestService]
-}) export class TestServiceDirective {}
-```
-
-The `ItemComponent` with `ng-content` for projection.
-
-```ts
-@Component({
-  selector: 'ia-item',
-  template: `
-      <h3>Self: {{ self?.ID ?? 'NULL' }}</h3>
-      <h3>Host: {{ host?.ID ?? 'NULL' }}</h3>
-      ...
-      <ng-content></ng-content>
-  `
-})
-export class ItemComponent {
-  self = inject(TestService, {self: true, optional: true})
-  host = inject(TestService, {host: true, optional: true})
-}
-```
-
-Projected component doesn't inject service from parent component with `self: true` option.
-```html
-    <ia-item iaTestService label="Parent">
-        <ia-item label="Projected component">
-        </ia-item>
-    </ia-item>
-```
-
 ## Angular examples
 
+
 ### Directives
+
 
 [**Source file:** directives.ts](src/ia/directives.ts)
 
